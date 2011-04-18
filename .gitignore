@@ -1,4 +1,5 @@
 .DS*
 ._*
 
+*.pyc
 _xtras/
