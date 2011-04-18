@@ -6,34 +6,33 @@ import gdata.youtube.service
 
 # ------------------------------------------------------------------------------
 
-#mainmodule = sys.modules['__main__']
-
-# ------------------------------------------------------------------------------
 
 class YouTube():
-
-	parameters = ''
+	
+	mainmodule = sys.modules['__main__']
+	
+	credentials = ''
 	
 	# ------------------------------------------------------------------------------
-
-	def __init__(self, parameters):
-		self.parameters = parameters
+	
+	def __init__(self, credentials):
+		print 'YouTube initialsed'
+		
+		self.credentials = credentials
 		self.yt_service = gdata.youtube.service.YouTubeService()
 		self.yt_service.ssl = False # The YouTube API does not currently support HTTPS/SSL access.
-		
-		print 'YouTube initialsed'
 	
 	# ------------------------------------------------------------------------------
-
+	
 	def Login(self):
 		try:
-			self.yt_service.email = self.parameters['email']
-			self.yt_service.password = self.parameters['password']
-			self.yt_service.source = self.parameters['application']
+			self.yt_service.email = self.credentials['email']
+			self.yt_service.password = self.credentials['password']
+			self.yt_service.source = self.credentials['application']
 			
 			# dev key & id
-			self.yt_service.developer_key = self.parameters['dev_key']
-			self.yt_service.client_id = self.parameters['client_id']
+			self.yt_service.developer_key = self.credentials['dev_key']
+			self.yt_service.client_id = self.credentials['client_id']
 			
 			self.yt_service.ProgrammaticLogin()
 			print 'Logged in!'
@@ -41,9 +40,9 @@ class YouTube():
 		except:
 			print 'Invalid username or password'
 			sys.exit(0)
-
+	
 	# ------------------------------------------------------------------------------
-
+	
 	def GetAndPrintSingleVideo(self, my_video_id):
 		try:
 			self.feed = self.yt_service.GetYouTubeVideoEntry(video_id=my_video_id)
@@ -57,9 +56,9 @@ class YouTube():
 			self.PrintEntryDetails(self.feed)
 		except:
 			print '--content ignored--'
-		
+	
 	# ------------------------------------------------------------------------------
-
+	
 	def GetAndPrintVideoFeed(self, uri):
 		try:
 			self.feed = self.yt_service.GetYouTubeVideoFeed(uri)
@@ -73,11 +72,12 @@ class YouTube():
 				self.PrintEntryDetails(entry)
 			except:
 				print '--content ignored--'
-
+	
 	# ------------------------------------------------------------------------------
-
+	
 	def PrintEntryDetails(self, entry):
-		print '--------------------------------------------------------------------------'
+		self.mainmodule.print_line()
+		
 		print 'Title:\t\t%s' % entry.media.title.text		
 		print 'Published on:\t%s ' % entry.published.text
 		print 'ID:\t\t%s' % entry.id.text
@@ -96,8 +96,7 @@ class YouTube():
 		# show thumbnails
 		#for thumbnail in entry.media.thumbnail:
 		#	print 'Thumbnail url:\t%s' % thumbnail.url
-
-		
+			
 		# show alternate formats (mostly doesn't exist)
 		#for alternate_format in entry.media.content:
 		#	if 'isDefault' not in alternate_format.extension_attributes:

@@ -1,0 +1,15 @@
+# Application
+
+server_path:    /Users/purplemass/Desktop/pp/
+
+# YouTube account credentials
+
+credentials:
+  email:         bob_ak@hotmail.com
+  password:      beats4me
+  username:      eaglerocktv
+  application:   my-example-application
+  dev_key:       AI39si7d7xVRmwtUXlhRXWtDs5NQhBNbq7xfLW4ZtIx74yU9Azs0XLCrPTKr60uN-X8juceJpjThVpoVeal-1FT-INJwm7OccQ
+  client_id:     purplemass
+
+youtube_feed:    http://gdata.youtube.com/feeds/api/users/%s/uploads
