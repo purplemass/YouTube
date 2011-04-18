@@ -1,0 +1,7 @@
+PYTHONPATH="/Users/purplemass/Downloads/gdata-2.0.14/src/gdata/:$PYTHONPATH"
+export PYTHONPATH
+
+Developer Key
+AI39si7d7xVRmwtUXlhRXWtDs5NQhBNbq7xfLW4ZtIx74yU9Azs0XLCrPTKr60uN-X8juceJpjThVpoVeal-1FT-INJwm7OccQ
+
+
