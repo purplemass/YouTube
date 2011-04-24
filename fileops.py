@@ -16,12 +16,12 @@ class FileOps():
 	# ------------------------------------------------------------------------------
 	
 	def __init__(self, server_path):
-		print 'FileOps initialsed'
+		print 'FileOps initialised'
+		self.mainmodule.print_line()
 		
 		self.server_path = server_path
 	
 	def scanFolder(self):
-		self.mainmodule.print_line()
 		print 'Scanning folder %s' % self.server_path
 		self.mainmodule.print_line()
 				
@@ -35,5 +35,7 @@ class FileOps():
 				(mode,ino,dev,nlink,uid,gid,size,atime,mtime,ctime) = os.stat(myfile)
 				mtime = datetime.fromtimestamp(mtime)
 				print mtime.strftime("%Y-%m-%d %H:%M:%S"), filename
+
+		self.mainmodule.print_line()
 		
 # ------------------------------------------------------------------------------

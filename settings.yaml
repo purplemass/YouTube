@@ -1,15 +1,17 @@
 # Application
 
-server_path:    /Users/purplemass/Desktop/pp/
+server_path:    /Users/purplemass/Desktop/YouTube/
 
 # YouTube account credentials
 
 credentials:
-  email:         bob_ak@hotmail.com
-  password:      beats4me
-  username:      eaglerocktv
+  email:         FocusCamTest
+  password:      focuscam
+  username:      FocusCamTest
+  username_test: eaglerocktv
   application:   my-example-application
   dev_key:       AI39si7d7xVRmwtUXlhRXWtDs5NQhBNbq7xfLW4ZtIx74yU9Azs0XLCrPTKr60uN-X8juceJpjThVpoVeal-1FT-INJwm7OccQ
   client_id:     purplemass
 
+# For testing only
 youtube_feed:    http://gdata.youtube.com/feeds/api/users/%s/uploads

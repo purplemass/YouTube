@@ -16,8 +16,9 @@ class YouTube():
 	# ------------------------------------------------------------------------------
 	
 	def __init__(self, credentials):
-		print 'YouTube initialsed'
-		
+		print 'YouTube initialised'
+		self.mainmodule.print_line()
+
 		self.credentials = credentials
 		self.yt_service = gdata.youtube.service.YouTubeService()
 		self.yt_service.ssl = False # The YouTube API does not currently support HTTPS/SSL access.
@@ -40,7 +41,41 @@ class YouTube():
 		except:
 			print 'Invalid username or password'
 			sys.exit(0)
+
+
+	# ------------------------------------------------------------------------------
 	
+	def UploadVideo(self, my_file_name):
+		# prepare a media group object to hold our video's meta-data
+		my_media_group = gdata.media.Group(
+		title=gdata.media.Title(text='My Test Movie'),
+		description=gdata.media.Description(description_type='plain', text='My description'),
+		keywords=gdata.media.Keywords(text='cars, funny'),
+		category=[gdata.media.Category(
+			text='Autos',
+			scheme='http://gdata.youtube.com/schemas/2007/categories.cat',
+			label='Autos')],
+			player=None
+		)
+		
+		# prepare a geo.where object to hold the geographical location
+		# of where the video was recorded
+		where = gdata.geo.Where()
+		where.set_location((37.0,-122.0))
+		
+		# create the gdata.youtube.YouTubeVideoEntry to be uploaded
+		video_entry = gdata.youtube.YouTubeVideoEntry(media=my_media_group, geo=where)
+		
+		# set the path for the video file binary
+		video_file_location = my_file_name
+		
+		# developer's tags
+		developer_tags = ['some_tag_01', 'another_tag']
+		video_entry.AddDeveloperTags(developer_tags)
+		
+		# upload
+		new_entry = self.yt_service.InsertVideoEntry(video_entry, video_file_location)
+		
 	# ------------------------------------------------------------------------------
 	
 	def GetAndPrintSingleVideo(self, my_video_id):

@@ -7,16 +7,7 @@ import youtube
 import yaml
 
 # ------------------------------------------------------------------------------
-# get settings
-
-f = open('settings.yaml')
-settings = yaml.load(f)
-f.close()
-
-credentials = settings['credentials']
-youtube_feed = settings['youtube_feed'] % credentials['username']
-server_path = settings['server_path']
-
+# FUNCTIONS
 # ------------------------------------------------------------------------------
 
 def print_line(double=False):
@@ -26,17 +17,64 @@ def print_line(double=False):
 		print '--------------------------------------------------------------------------'
 
 # ------------------------------------------------------------------------------
+
+def log(priority, msg):
+	if priority == 3:
+		error = 'ERROR '
+	else:
+		error = ''
+	
+	print '%s%s' % (error, msg)
+	
+# ------------------------------------------------------------------------------
 # START HERE
+# ------------------------------------------------------------------------------
+
+# get settings
+
+error = False
+settings_file = 'settings.yaml'
+
+try:
+	f = open(settings_file)
+except:
+	log(3, 'Cannot open %s' % settings_file)
+	error = True
+
+try:
+	settings = yaml.load(f)
+except:
+	log(3, 'Cannot load YAML')
+	error = True
+
+try:
+	f.close()
+except:
+	log(3, 'Cannot close file %s' % settings_file)
+	error = True
+
+if (not error):
+	credentials = settings['credentials']
+	youtube_feed = settings['youtube_feed'] % credentials['username']
+	server_path = settings['server_path']
+else:
+	sys.exit('Existing program')
+
+# ------------------------------------------------------------------------------
+# Main program
 
 print_line(True)
 
 if (__name__ == '__main__'):
 	fileops = fileops.FileOps(server_path)
 	fileops.scanFolder()
-	#youtube = youtube.YouTube(credentials);
 	
-	#youtube.Login();
-	#youtube.GetAndPrintVideoFeed(youtube_feed)
+	youtube = youtube.YouTube(credentials)
+	youtube.Login()
+	
+	#youtube.UploadVideo('%s%s' % (server_path, 'jumps.mov'))
+	
+	youtube.GetAndPrintVideoFeed(youtube_feed)
 	#youtube.GetAndPrintSingleVideo('Glny4jSciVI')
 
 print_line(True)
