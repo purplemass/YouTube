@@ -73,8 +73,16 @@ class YouTube():
 		video_entry.AddDeveloperTags(developer_tags)
 		
 		# upload
-		new_entry = self.yt_service.InsertVideoEntry(video_entry, video_file_location)
-		
+		self.common.log(2, 'Uploading file: %s' % video_file_location)
+		try:
+			#new_entry = self.yt_service.InsertVideoEntry(video_entry, video_file_location)
+			ret = True
+		except:
+			self.common.log(3, 'Could not upload file: %s' % video_file_location)
+			ret = False
+
+		return ret
+	
 	# ------------------------------------------------------------------------------
 	
 	def GetAndPrintSingleVideo(self, my_video_id):

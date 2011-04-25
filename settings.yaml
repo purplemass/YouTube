@@ -2,8 +2,13 @@
 # Application
 # ---------------------------------------------------------------
 
-server_path:    /Users/purplemass/Desktop/YouTube/
-pause_time:     5
+paths:
+  server:       /Users/purplemass/Desktop/YouTube/
+  incoming:     ./incoming/
+  archive:      ./archive/
+  separator:    /
+ 
+pause_time:    5
 
 # ---------------------------------------------------------------
 # Files

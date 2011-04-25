@@ -45,7 +45,7 @@ if (not error):
 	pause_time = settings['pause_time']
 	credentials = settings['credentials']
 	youtube_feed = settings['youtube_feed'] % credentials['username']
-	server_path = settings['server_path']
+	paths = settings['paths']
 	movie_extension = settings['movie_extension']
 else:
 	sys.exit('Existing program')
@@ -56,23 +56,27 @@ else:
 
 if (__name__ == '__main__'):
 
-	fileops = fileops.FileOps(server_path)
+	fileops = fileops.FileOps(paths, movie_extension)
 	youtube = youtube.YouTube(credentials)
+	#youtube.Login()
+	#youtube.GetAndPrintVideoFeed(youtube_feed)
+	#youtube.GetAndPrintSingleVideo('Glny4jSciVI')
 	
 	while common.running:
 		
 		common.PrintLine(True)
 		
-		fileops.ProcessFolder()
-		
-		#youtube.Login()
-		
-		#youtube.UploadVideo('%s%s' % (server_path, 'jumps.mov'))
-		
-		#youtube.GetAndPrintVideoFeed(youtube_feed)
-		#youtube.GetAndPrintSingleVideo('Glny4jSciVI')
-
-		time.sleep(pause_time)
+		file_name = fileops.ProcessFolder()	
+		if (file_name == False):
+			time.sleep(pause_time)
+		else:
+			full_path = paths['server'] + file_name
+			ret = youtube.UploadVideo(full_path)
+			if (ret):
+				ret = fileops.DeleteFile(full_path)
+				if (ret):
+					ret = fileops.ArchiveFile(file_name)
+			time.sleep(1)
 
 # ------------------------------------------------------------------------------
 # reference:

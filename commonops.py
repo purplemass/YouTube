@@ -16,7 +16,7 @@ class CommonOps():
 	
 	def __init__(self):
 		self.PrintLine(True)
-		self.common.log(1, 'CommonOps initialised')
+		self.log(1, 'CommonOps initialised')
 	
 	# ------------------------------------------------------------------------------
 	
@@ -34,6 +34,6 @@ class CommonOps():
 		else:
 			error = ''
 		
-		print '%s%s' % (error, msg)
+		print '%s %s%s' % (priority, error, msg)
 
 # ------------------------------------------------------------------------------
