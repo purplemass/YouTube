@@ -9,7 +9,7 @@ import gdata.youtube.service
 
 class YouTube():
 	
-	mainmodule = sys.modules['__main__']
+	common = sys.modules['__main__'].common
 	
 	credentials = ''
 	
@@ -17,7 +17,7 @@ class YouTube():
 	
 	def __init__(self, credentials):
 		print 'YouTube initialised'
-		self.mainmodule.print_line()
+		self.common.print_line()
 
 		self.credentials = credentials
 		self.yt_service = gdata.youtube.service.YouTubeService()
@@ -111,7 +111,7 @@ class YouTube():
 	# ------------------------------------------------------------------------------
 	
 	def PrintEntryDetails(self, entry):
-		self.mainmodule.print_line()
+		self.common.print_line()
 		
 		print 'Title:\t\t%s' % entry.media.title.text		
 		print 'Published on:\t%s ' % entry.published.text

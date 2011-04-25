@@ -1,33 +1,15 @@
 # ------------------------------------------------------------------------------
 
 import sys
+import time
+
+import commonops
+common = commonops.CommonOps()
 
 import fileops
 import youtube
 import yaml
 
-# ------------------------------------------------------------------------------
-# FUNCTIONS
-# ------------------------------------------------------------------------------
-
-def print_line(double=False):
-	if (double):
-		print '=========================================================================='
-	else:
-		print '--------------------------------------------------------------------------'
-
-# ------------------------------------------------------------------------------
-
-def log(priority, msg):
-	if priority == 3:
-		error = 'ERROR '
-	else:
-		error = ''
-	
-	print '%s%s' % (error, msg)
-	
-# ------------------------------------------------------------------------------
-# START HERE
 # ------------------------------------------------------------------------------
 
 # get settings
@@ -38,22 +20,23 @@ settings_file = 'settings.yaml'
 try:
 	f = open(settings_file)
 except:
-	log(3, 'Cannot open %s' % settings_file)
+	common.log(3, 'Cannot open %s' % settings_file)
 	error = True
 
 try:
 	settings = yaml.load(f)
 except:
-	log(3, 'Cannot load YAML')
+	common.log(3, 'Cannot load YAML')
 	error = True
 
 try:
 	f.close()
 except:
-	log(3, 'Cannot close file %s' % settings_file)
+	common.log(3, 'Cannot close file %s' % settings_file)
 	error = True
 
 if (not error):
+	pause_time = settings['pause_time']
 	credentials = settings['credentials']
 	youtube_feed = settings['youtube_feed'] % credentials['username']
 	server_path = settings['server_path']
@@ -63,21 +46,27 @@ else:
 # ------------------------------------------------------------------------------
 # Main program
 
-print_line(True)
-
 if (__name__ == '__main__'):
-	fileops = fileops.FileOps(server_path)
-	fileops.scanFolder()
-	
-	youtube = youtube.YouTube(credentials)
-	youtube.Login()
-	
-	#youtube.UploadVideo('%s%s' % (server_path, 'jumps.mov'))
-	
-	youtube.GetAndPrintVideoFeed(youtube_feed)
-	#youtube.GetAndPrintSingleVideo('Glny4jSciVI')
 
-print_line(True)
+	fileops = fileops.FileOps(server_path)
+	youtube = youtube.YouTube(credentials)
+	
+	while common.running:
+		
+		common.print_line(True)
+
+		fileops.scanFolder()
+		
+		#youtube.Login()
+		
+		#youtube.UploadVideo('%s%s' % (server_path, 'jumps.mov'))
+		
+		#youtube.GetAndPrintVideoFeed(youtube_feed)
+		#youtube.GetAndPrintSingleVideo('Glny4jSciVI')
+
+		common.print_line(True)
+		
+		time.sleep(pause_time)
 
 # ------------------------------------------------------------------------------
 # reference:
