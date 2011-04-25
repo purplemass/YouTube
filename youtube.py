@@ -16,8 +16,7 @@ class YouTube():
 	# ------------------------------------------------------------------------------
 	
 	def __init__(self, credentials):
-		print 'YouTube initialised'
-		self.common.print_line()
+		self.common.log(1, 'YouTube initialised')
 
 		self.credentials = credentials
 		self.yt_service = gdata.youtube.service.YouTubeService()
@@ -27,7 +26,7 @@ class YouTube():
 	
 	def Login(self):
 		try:
-			self.yt_service.email = self.credentials['email']
+			self.yt_service.email = self.credentials['username']
 			self.yt_service.password = self.credentials['password']
 			self.yt_service.source = self.credentials['application']
 			
@@ -36,10 +35,10 @@ class YouTube():
 			self.yt_service.client_id = self.credentials['client_id']
 			
 			self.yt_service.ProgrammaticLogin()
-			print 'Logged in!'
+			self.common.log(2, 'Logged in!')
 		
 		except:
-			print 'Invalid username or password'
+			self.common.log(3, 'Invalid username or password')
 			sys.exit(0)
 
 
@@ -82,15 +81,15 @@ class YouTube():
 		try:
 			self.feed = self.yt_service.GetYouTubeVideoEntry(video_id=my_video_id)
 		except gdata.service.RequestError, e:
-			print 'Error reading feed: %s' % (e[0]['reason'])
+			self.common.log(3, 'Error reading feed: %s' % (e[0]['reason']))
 			sys.exit(0)
 		
-		#print self.feed.author[0].name.text
+		#self.common.log(1, self.feed.author[0].name.text)
 		
 		try:
 			self.PrintEntryDetails(self.feed)
 		except:
-			print '--content ignored--'
+			self.common.log(1, '--content ignored--')
 	
 	# ------------------------------------------------------------------------------
 	
@@ -99,40 +98,42 @@ class YouTube():
 			self.feed = self.yt_service.GetYouTubeVideoFeed(uri)
 			#self.feed = self.yt_service.GetTopRatedVideoFeed()
 		except gdata.service.RequestError, e:
-			print 'Error reading feed: %s' % (e[0]['reason'])
+			self.common.log(3, 'Error reading feed: %s' % (e[0]['reason']))
 			sys.exit(0)
 		
 		for entry in self.feed.entry:
 			try:
 				self.PrintEntryDetails(entry)
 			except:
-				print '--content ignored--'
+				self.common.log(1, '--content ignored--')
 	
 	# ------------------------------------------------------------------------------
 	
 	def PrintEntryDetails(self, entry):
-		self.common.print_line()
+		self.common.PrintLine()
 		
-		print 'Title:\t\t%s' % entry.media.title.text		
-		print 'Published on:\t%s ' % entry.published.text
-		print 'ID:\t\t%s' % entry.id.text
-		#print 'description: %s' % entry.media.description.text
-		print 'Category:\t%s' % entry.media.category[0].text
-		#print 'Tags:\t\t%s' % entry.media.keywords.text
-		#print 'Watch page:\t%s' % entry.media.player.url
-		#print 'Flash URL:\t%s' % entry.GetSwfUrl()
-		print 'Duration:\t%s' % entry.media.duration.seconds
+		self.common.log(1, 'Title:\t\t%s' % entry.media.title.text)
+		self.common.log(1, 'Published on:\t%s ' % entry.published.text)
+		self.common.log(1, 'ID:\t\t%s' % entry.id.text)
+		#self.common.log(1, 'description: %s' % entry.media.description.text)
+		self.common.log(1, 'Category:\t%s' % entry.media.category[0].text)
+		#self.common.log(1, 'Tags:\t\t%s' % entry.media.keywords.text)
+		#self.common.log(1, 'Watch page:\t%s' % entry.media.player.url)
+		#self.common.log(1, 'Flash URL:\t%s' % entry.GetSwfUrl())
+		self.common.log(1, 'Duration:\t%s' % entry.media.duration.seconds)
 		
 		# non entry.media attributes
-		#print 'geo location: %s' % entry.geo.location() # mostly doesn't exist
-		print 'View count:\t%s' % entry.statistics.view_count
-		print 'Rating:\t\t%s' % entry.rating.average
+		#self.common.log(1, 'geo location: %s' % entry.geo.location()) # mostly doesn't exist
+		self.common.log(1, 'View count:\t%s' % entry.statistics.view_count)
+		self.common.log(1, 'Rating:\t\t%s' % entry.rating.average)
 		
 		# show thumbnails
 		#for thumbnail in entry.media.thumbnail:
-		#	print 'Thumbnail url:\t%s' % thumbnail.url
+		#	self.common.log(1, 'Thumbnail url:\t%s' % thumbnail.url)
 			
 		# show alternate formats (mostly doesn't exist)
 		#for alternate_format in entry.media.content:
 		#	if 'isDefault' not in alternate_format.extension_attributes:
-		#		print 'Other format:\t%s | url: %s ' % (alternate_format.type, alternate_format.url)
+		#		self.common.log(1, 'Other format:\t%s | url: %s ' % (alternate_format.type, alternate_format.url))
+
+# ------------------------------------------------------------------------------

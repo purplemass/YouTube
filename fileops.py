@@ -14,31 +14,48 @@ class FileOps():
 	
 	server_path = ''
 	file_list = {}
+	file_list_sorted_keys = []
 	
 	# ------------------------------------------------------------------------------
 	
 	def __init__(self, server_path):
-		print 'FileOps initialised'		
-		self.common.print_line()
+		self.common.log(1, 'FileOps initialised')
 		
 		self.server_path = server_path
 	
-	def copyFile(self, file_name):
+	# ------------------------------------------------------------------------------
+	
+	def ProcessFolder(self):
+		self.ScanFolder()
+
+		file_to_process = self.GetOldestFile()
+				
+		# log		
+		self.common.PrintLine()
+		self.common.log(1, 'Files to process: %s' % len(self.file_list))
+		self.common.log(2, 'Oldest file: %s' % file_to_process)
+		self.common.PrintLine()
+		
+	# ------------------------------------------------------------------------------
+	
+	def CopyFile(self, file_name):
 		commmon.log(2, 'Copying file: %s' % file_name)
 	
-	def sortedDictValues(self, adict):
-		keys = adict.items()
-		keys.sort()
-		mylist = {}
-		for key, value in keys:
-			mylist[key] = value
-		print mylist
-		return [mylist]
+	# ------------------------------------------------------------------------------
+
+	def SortFileList(self, adict):
+		self.file_list_sorted_keys = adict.keys()
+		self.file_list_sorted_keys.sort()
 	
-	def scanFolder(self):
-		print 'Scanning folder %s' % self.server_path
-		
-		self.common.print_line()
+	# ------------------------------------------------------------------------------
+	
+	def GetOldestFile(self):
+		return self.file_list[self.file_list_sorted_keys[0]]
+	
+	# ------------------------------------------------------------------------------
+	
+	def ScanFolder(self):
+		self.common.log(1, 'Scanning folder %s' % self.server_path)
 		
 		self.file_list = {}
 		
@@ -47,23 +64,26 @@ class FileOps():
 		for filename in dircache.listdir(self.server_path):
 			cc += 1
 			myfile = os.path.join(self.server_path, filename)
-			(mode,ino,dev,nlink,uid,gid,size,atime,mtime,ctime) = os.stat(myfile)
-			mtime = datetime.fromtimestamp(mtime)
-			print cc, mtime.strftime("%Y-%m-%d %H:%M:%S"), filename
 			
-			self.file_list[str(mtime) + '-' + str(cc)] = filename
-				
-		self.file_list = self.sortedDictValues(self.file_list)
+			# check extension movie_extension
+			if (True):
+				(mode,ino,dev,nlink,uid,gid,size,atime,mtime,ctime) = os.stat(myfile)
+				mtime = datetime.fromtimestamp(mtime)
+				self.file_list[str(mtime) + '-' + str(cc)] = filename
 		
-		self.common.print_line()
-		self.common.log(1, 'Files to process: %s' % len(self.file_list))
-		self.common.print_line()
+		# get sorted keys
+		self.SortFileList(self.file_list)
 		
-		print self.file_list
-		
+		"""
 		cc = 1
 		for k, v in self.file_list.iteritems():
 			print cc, k, v
-			cc =+ 1
+			cc += 1
+		"""
+		
+		# print files
+		self.common.PrintLine()
+		for mdt in self.file_list_sorted_keys:
+			self.common.log(1, '%s %s' % (mdt, self.file_list[mdt]))
 
 # ------------------------------------------------------------------------------

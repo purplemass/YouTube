@@ -1,4 +1,6 @@
 # ------------------------------------------------------------------------------
+# import
+# ------------------------------------------------------------------------------
 
 import sys
 import time
@@ -11,8 +13,8 @@ import youtube
 import yaml
 
 # ------------------------------------------------------------------------------
-
 # get settings
+# ------------------------------------------------------------------------------
 
 error = False
 settings_file = 'settings.yaml'
@@ -35,16 +37,22 @@ except:
 	common.log(3, 'Cannot close file %s' % settings_file)
 	error = True
 
+# ------------------------------------------------------------------------------
+# process settings
+# ------------------------------------------------------------------------------
+
 if (not error):
 	pause_time = settings['pause_time']
 	credentials = settings['credentials']
 	youtube_feed = settings['youtube_feed'] % credentials['username']
 	server_path = settings['server_path']
+	movie_extension = settings['movie_extension']
 else:
 	sys.exit('Existing program')
 
 # ------------------------------------------------------------------------------
 # Main program
+# ------------------------------------------------------------------------------
 
 if (__name__ == '__main__'):
 
@@ -53,9 +61,9 @@ if (__name__ == '__main__'):
 	
 	while common.running:
 		
-		common.print_line(True)
-
-		fileops.scanFolder()
+		common.PrintLine(True)
+		
+		fileops.ProcessFolder()
 		
 		#youtube.Login()
 		
@@ -64,8 +72,6 @@ if (__name__ == '__main__'):
 		#youtube.GetAndPrintVideoFeed(youtube_feed)
 		#youtube.GetAndPrintSingleVideo('Glny4jSciVI')
 
-		common.print_line(True)
-		
 		time.sleep(pause_time)
 
 # ------------------------------------------------------------------------------

@@ -1,18 +1,30 @@
+# ---------------------------------------------------------------
 # Application
+# ---------------------------------------------------------------
 
 server_path:    /Users/purplemass/Desktop/YouTube/
 pause_time:     5
 
+# ---------------------------------------------------------------
+# Files
+# ---------------------------------------------------------------
+
+movie_extension: mov
+
+# ---------------------------------------------------------------
 # YouTube account credentials
+# ---------------------------------------------------------------
 
 credentials:
-  email:         FocusCamTest
-  password:      focuscam
   username:      FocusCamTest
+  password:      focuscam
   username_test: eaglerocktv
   application:   my-example-application
   dev_key:       AI39si7d7xVRmwtUXlhRXWtDs5NQhBNbq7xfLW4ZtIx74yU9Azs0XLCrPTKr60uN-X8juceJpjThVpoVeal-1FT-INJwm7OccQ
   client_id:     purplemass
 
+# ---------------------------------------------------------------
 # For testing only
+# ---------------------------------------------------------------
+
 youtube_feed:    http://gdata.youtube.com/feeds/api/users/%s/uploads
