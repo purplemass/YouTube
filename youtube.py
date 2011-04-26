@@ -49,7 +49,7 @@ class YouTube():
 
 	# ------------------------------------------------------------------------------
 	
-	def UploadVideo(self, my_file_name):
+	def UploadVideo(self, video_file_location):
 		# prepare a media group object to hold our video's meta-data
 		my_media_group = gdata.media.Group(
 			title=gdata.media.Title(text=self.tags['title']),
@@ -83,9 +83,6 @@ class YouTube():
 		# create the gdata.youtube.YouTubeVideoEntry to be uploaded
 		video_entry = gdata.youtube.YouTubeVideoEntry(media=my_media_group) #, geo=where
 		
-		# set the path for the video file binary
-		video_file_location = my_file_name
-		
 		# developer's tags
 		developer_tags = self.tags['developer']
 		video_entry.AddDeveloperTags(developer_tags)
@@ -96,7 +93,7 @@ class YouTube():
 		self.common.log(2, 'Uploading file: %s' % video_file_location)
 				
 		try:
-			new_entry = self.yt_service.InsertVideoEntry(video_entry, video_file_location)
+			#new_entry = self.yt_service.InsertVideoEntry(video_entry, video_file_location)
 			
 			# should we do this?!!
 # 			while True: 

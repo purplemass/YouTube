@@ -88,10 +88,9 @@ if (__name__ == '__main__'):
 		if (file_name == False):
 			time.sleep(pause_time)
 		else:
-			full_path = paths['server'] + file_name
-			ret = youtube.UploadVideo(full_path)
+			ret = youtube.UploadVideo(paths['incoming'] + file_name)
 			if (ret):
-				ret = fileops.DeleteFile(full_path)
+				ret = fileops.DeleteFile(paths['server'] + file_name)
 				if (ret):
 					ret = fileops.ArchiveFile(file_name)
 		

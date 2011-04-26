@@ -3,24 +3,24 @@
 # ---------------------------------------------------------------
 
 paths:
-  server:       /Users/purplemass/Desktop/YouTube/
-  incoming:     ./incoming/
-  archive:      ./archive/
-  separator:    /
+  server:          /Users/purplemass/Desktop/YouTube/
+  incoming:        ./incoming/
+  archive:         ./archive/
+  separator:       /
  
-pause_time:    5
+pause_time:        5
 
 # ---------------------------------------------------------------
 # Files
 # ---------------------------------------------------------------
 
-movie_extension: mov
+movie_extension:   mov
 
 tags:
-  title:        imag_dev
-  description:  My description
-  keywords:     cars, funny, imag_dev
-  category:     Sports
+  title:           imag_dev
+  description:     My description
+  keywords:        cars, funny, imag_dev
+  category:        Sports
   developer:
     - imag_dev
     - imagination321
@@ -30,15 +30,15 @@ tags:
 # ---------------------------------------------------------------
 
 credentials:
-  username:      FocusCamTest
-  password:      focuscam
-  username_test: eaglerocktv
-  application:   my-example-application
-  dev_key:       AI39si7d7xVRmwtUXlhRXWtDs5NQhBNbq7xfLW4ZtIx74yU9Azs0XLCrPTKr60uN-X8juceJpjThVpoVeal-1FT-INJwm7OccQ
-  client_id:     FocusCamTest
+  username:        FocusCamTest
+  password:        focuscam
+  username_test:   eaglerocktv
+  application:     my-example-application
+  dev_key:         AI39si7d7xVRmwtUXlhRXWtDs5NQhBNbq7xfLW4ZtIx74yU9Azs0XLCrPTKr60uN-X8juceJpjThVpoVeal-1FT-INJwm7OccQ
+  client_id:       FocusCamTest
 
 # ---------------------------------------------------------------
 # For testing only
 # ---------------------------------------------------------------
 
-youtube_feed:    http://gdata.youtube.com/feeds/api/users/%s/uploads
+youtube_feed:      http://gdata.youtube.com/feeds/api/users/%s/uploads

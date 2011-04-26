@@ -114,7 +114,12 @@ class FileOps():
 		self.file_list = {}
 		
 		try:
-			myfilelist = dircache.listdir(self.path_server)
+			# do not use this on Windows:
+			# dircache.listdir(self.path_server)
+			# as it's cached (obviously!)
+			#
+			myfilelist = os.listdir(self.path_server)
+		
 		except OSError:
 			self.common.log(3, 'Cannot connect to folder')
 			myfilelist = []
@@ -128,9 +133,12 @@ class FileOps():
 			# check extension
 			if (myfile.endswith('.' + self.movie_extension)):
 				#ERR!!
-				(mode,ino,dev,nlink,uid,gid,size,atime,mtime,ctime) = os.stat(myfile)
-				mtime = datetime.fromtimestamp(mtime)
-				self.file_list[str(mtime) + '-' + str(cc)] = filename
+				try:
+					(mode,ino,dev,nlink,uid,gid,size,atime,mtime,ctime) = os.stat(myfile)
+					mtime = datetime.fromtimestamp(mtime)
+					self.file_list[str(mtime) + '-' + str(cc)] = filename
+				except:
+					self.common.log(3, 'Could not process file %s so ignoring it' % myfile)
 		
 		# get sorted keys
 		self.SortFileList(self.file_list)
@@ -143,7 +151,7 @@ class FileOps():
 			os.mkdir(folder)
 			self.common.log(2, 'Folder created: %s' % folder)			
 		except OSError as (errno, strerror):
-			if (errno == 17):
+			if (errno == 17 or errno == 183): #17 for OSX, 183 for Windows
 				#self.common.log(1, 'Folder exists: %s' % folder)
 				pass
 			else:
