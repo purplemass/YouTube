@@ -68,24 +68,22 @@ if (__name__ == '__main__'):
 	fileops = fileops.FileOps(paths, movie_extension)
 	youtube = youtube.YouTube(credentials, tags)
 	
-	# get dev tag list
-	#youtube.GetDeveloperTagList(tags['developer'][0])
-	#sys.exit()
-
 	youtube.Login()
+	
+	# show tagged videos for testing:	
+	youtube.GetDeveloperTagList(tags['developer'][0])
 	
 	# get all videos
 	#youtube.GetAndPrintVideoFeed(youtube_feed)
 	#sys.exit()
 	
+	# get a single video
 	#youtube.GetAndPrintSingleVideo('Glny4jSciVI')
 
 	while common.running:
 		
 		common.PrintLine(True)
-		
-		youtube.GetDeveloperTagList(tags['developer'][0])
-		
+				
 		file_name = fileops.ProcessFolder()	
 		if (file_name == False):
 			time.sleep(pause_time)

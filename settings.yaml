@@ -35,7 +35,7 @@ credentials:
   username_test: eaglerocktv
   application:   my-example-application
   dev_key:       AI39si7d7xVRmwtUXlhRXWtDs5NQhBNbq7xfLW4ZtIx74yU9Azs0XLCrPTKr60uN-X8juceJpjThVpoVeal-1FT-INJwm7OccQ
-  client_id:     remove
+  client_id:     FocusCamTest
 
 # ---------------------------------------------------------------
 # For testing only

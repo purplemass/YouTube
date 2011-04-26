@@ -37,7 +37,7 @@ class YouTube():
 			self.yt_service.developer_key = self.credentials['dev_key']
 			
 			# no longer required!!
-			#self.yt_service.client_id = self.credentials['client_id']
+			self.yt_service.client_id = self.credentials['client_id']
 			
 			self.yt_service.ProgrammaticLogin()
 			self.common.log(2, 'Logged in!')
@@ -60,17 +60,17 @@ class YouTube():
 						text=self.tags['category'],
 						scheme='http://gdata.youtube.com/schemas/2007/categories.cat',
 						label=self.tags['category']
-					),
-					gdata.media.Category(
-						text='jacqui0',
-						label='jacqui0',
-						scheme='http://gdata.youtube.com/schemas/2007/developertags.cat'
-					),
-					gdata.media.Category(
-						text='jacqui1',
-						label='jacqui1',
-						scheme='http://gdata.youtube.com/schemas/2007/developertags.cat'
 					)
+# 					gdata.media.Category(
+# 						text='jacqui0',
+# 						label='jacqui0',
+# 						scheme='http://gdata.youtube.com/schemas/2007/developertags.cat'
+# 					),
+# 					gdata.media.Category(
+# 						text='jacqui1',
+# 						label='jacqui1',
+# 						scheme='http://gdata.youtube.com/schemas/2007/developertags.cat'
+# 					)
 				],
 				player=None
 		)
@@ -87,33 +87,28 @@ class YouTube():
 		video_file_location = my_file_name
 		
 		# developer's tags
-# 		print 'DEV TAGS: %s' % video_entry.GetDeveloperTags()
-		
-		developer_tags = self.tags['developer'] #[self.tags['developer'][0]] #
+		developer_tags = self.tags['developer']
 		video_entry.AddDeveloperTags(developer_tags)
 		
-# 		print 'DEV TAGS: %s' % video_entry.GetDeveloperTags()
-# 		print '+++++++++++++++++++++++++++++++++++++++++++++++++++'
-# 		print video_entry
-# 		print '+++++++++++++++++++++++++++++++++++++++++++++++++++'
+		#print 'DEV TAGS: %s' % video_entry.GetDeveloperTags()
 		
 		# upload
 		self.common.log(2, 'Uploading file: %s' % video_file_location)
-		
-		new_entry = self.yt_service.InsertVideoEntry(video_entry, video_file_location)
-# 		while True: 
-# 			upload_status = self.yt_service.CheckUploadStatus(new_entry) 
-# 			if upload_status is not None:
-# 				video_upload_state = upload_status[0]
-# 				detailed_message = upload_status[1]
-# 				print video_upload_state, detailed_message
-		
- 		sys.exit()
-		
+				
 		try:
 			new_entry = self.yt_service.InsertVideoEntry(video_entry, video_file_location)
+			
+			# should we do this?!!
+# 			while True: 
+# 				upload_status = self.yt_service.CheckUploadStatus(new_entry) 
+# 				if upload_status is not None:
+# 					video_upload_state = upload_status[0]
+# 					detailed_message = upload_status[1]
+# 					print video_upload_state, detailed_message
+			
 			self.common.log(2, 'File uploaded: %s' % video_file_location)
 			ret = True
+			
 		except gdata.youtube.service.YouTubeError, e:
 			self.common.log(3, 'Could not upload file: %s (%s)' % (video_file_location, e[0]['reason']))
 			ret = False
@@ -123,31 +118,41 @@ class YouTube():
 	# ------------------------------------------------------------------------------
 	
 	def GetDeveloperTagList(self, developer_tag):
+		self.common.PrintLine()
 		self.common.log(1, 'Looking for developer tag: %s' % developer_tag)
 		
-		self.yt_service.source = self.credentials['application']
-		self.yt_service.client_id = self.credentials['client_id']
-		self.yt_service.developer_key = self.credentials['dev_key']
-		
-		developer_tag = 'jacqui123'
-		
-		# ALL
-		#uri = 'http://gdata.youtube.com/feeds/api/videos/-/' + developer_tag + '?v=2'
+		#self.yt_service.developer_key = self.credentials['dev_key']
 		
 		# OLDER
-		uri = 'http://gdata.youtube.com/feeds/videos/-/%7Bhttp%3A%2F%2Fgdata.youtube.com%2Fschemas%2F2007%2Fdevelopertags.cat%7D' + developer_tag
+		#uri = 'http://gdata.youtube.com/feeds/videos/-/%7Bhttp%3A%2F%2Fgdata.youtube.com%2Fschemas%2F2007%2Fdevelopertags.cat%7D' + developer_tag
 		
 		# NEW
-		#uri = 'http://gdata.youtube.com/feeds/api/videos/-/%7Bhttp%3A%2F%2Fgdata.youtube.com%2Fschemas%2F2007%2Fdevelopertags.cat%7D' + developer_tag + '?v=2'
-		#uri = 'http://gdata.youtube.com/feeds/api/videos?category=%7Bhttp%3A%2F%2Fgdata.youtube.com%2Fschemas%2F2007%2Fdevelopertags.cat%7D' + developer_tag
-		#uri = 'http://gdata.youtube.com/feeds/api/videos?category={http://gdata.youtube.com/schemas/2007/developertags.cat}' + developer_tag + '?v=2'		        
+		uri = 'http://gdata.youtube.com/feeds/api/videos?category=%7Bhttp%3A%2F%2Fgdata.youtube.com%2Fschemas%2F2007%2Fdevelopertags.cat%7D' + developer_tag
 		
 		# WRONG
 		#uri = 'http://gdata.youtube.com/feeds/api/videos/-/%7Bhttp://gdata.youtube.com/schemas/2007/developertags.cat%7D' + developer_tag + '?v=2'
 		#uri = 'http://gdata.youtube.com/feeds/api/videos/-/{http://gdata.youtube.com/schemas/2007/developertags.cat}' + developer_tag + '?v=2'
-
-						
-		#print self.yt_service.GetYouTubeVideoFeed(uri)
+		
+		# not sure why these are wrong
+		#uri = 'http://gdata.youtube.com/feeds/api/videos/-/%7Bhttp%3A%2F%2Fgdata.youtube.com%2Fschemas%2F2007%2Fdevelopertags.cat%7D' + developer_tag + '?v=2'
+		#uri = 'http://gdata.youtube.com/feeds/api/videos?category={http://gdata.youtube.com/schemas/2007/developertags.cat}' + developer_tag + '?v=2'		        
+		#uri = 'http://gdata.youtube.com/feeds/api/videos/-/' + developer_tag + '?v=2'
+		
+		try:
+			feed = self.yt_service.GetYouTubeVideoFeed(uri)		
+			entry_num = feed.total_results.text
+		except gdata.service.RequestError, e:
+			self.common.log(3, 'Error reading feed: %s' % (e[0]['reason']))
+			entry_num = 0
+		
+		self.common.log(1, 'Found %s entries with developer tag: %s' % (entry_num, developer_tag))
+		
+		if (entry_num > 0):
+			for entry in feed.entry:
+				try:
+					self.PrintEntryDetails(entry)
+				except:
+					self.common.log(1, '--content ignored--')
 	
 	# ------------------------------------------------------------------------------
 	
@@ -168,17 +173,6 @@ class YouTube():
 	# ------------------------------------------------------------------------------
 	
 	def GetAndPrintVideoFeed(self, uri):
-	
-# 		entry = self.yt_service.GetYouTubeVideoEntry(uri)
-# 		upload_status = self.yt_service.CheckUploadStatus(None, 'Pu43mzXcw9Q')
-# 		print upload_status
-# 		if upload_status is not None:
-# 			video_upload_state = upload_status[0]
-# 			detailed_message = upload_status[1]
-# 		else:
-# 			return False
-# 		
-		
 		try:
 			self.feed = self.yt_service.GetYouTubeVideoFeed(uri)
 			#self.feed = self.yt_service.GetTopRatedVideoFeed()
@@ -189,7 +183,7 @@ class YouTube():
 		print self.feed
 		
 		for entry in self.feed.entry:
-			print entry
+			#print entry
 			try:
 				self.PrintEntryDetails(entry)
 			except:
@@ -199,21 +193,29 @@ class YouTube():
 	
 	def PrintEntryDetails(self, entry):
 		self.common.PrintLine()
-		
+
 		self.common.log(1, 'Title:\t%s' % entry.media.title.text)
 		self.common.log(1, 'Published on:\t%s ' % entry.published.text)
 		self.common.log(1, 'ID:\t\t%s' % entry.id.text)
-		#self.common.log(1, 'description: %s' % entry.media.description.text)
+		self.common.log(1, 'Description:\t%s' % entry.media.description.text)
+		self.common.log(1, 'Keywords\t%s' % entry.media.keywords.text)
 		self.common.log(1, 'Category:\t%s' % entry.media.category[0].text)
-		#self.common.log(1, 'Tags:\t\t%s' % entry.media.keywords.text)
+		
+		c = 1
+		for category in entry.media.category:
+			if (c > 1):
+				self.common.log(1, 'Dev Tag:\t%s' % category.text)
+			c += 1
+
 		#self.common.log(1, 'Watch page:\t%s' % entry.media.player.url)
 		#self.common.log(1, 'Flash URL:\t%s' % entry.GetSwfUrl())
 		self.common.log(1, 'Duration:\t%s' % entry.media.duration.seconds)
 		
 		# non entry.media attributes
+		# normally not set:
 		#self.common.log(1, 'geo location: %s' % entry.geo.location()) # mostly doesn't exist
-		self.common.log(1, 'View count:\t%s' % entry.statistics.view_count)
-		self.common.log(1, 'Rating:\t\t%s' % entry.rating.average)
+		#self.common.log(1, 'View count:\t%s' % entry.statistics.view_count)
+		#self.common.log(1, 'Rating:\t\t%s' % entry.rating.average)
 		
 		# show thumbnails
 		#for thumbnail in entry.media.thumbnail:
