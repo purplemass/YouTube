@@ -42,11 +42,20 @@ except:
 # ------------------------------------------------------------------------------
 
 if (not error):
-	pause_time = settings['pause_time']
-	credentials = settings['credentials']
-	youtube_feed = settings['youtube_feed'] % credentials['username']
 	paths = settings['paths']
 	movie_extension = settings['movie_extension']
+	
+	pause_time = settings['pause_time']
+	
+	credentials = settings['credentials']
+	tags = settings['tags']
+	
+	youtube_feed = settings['youtube_feed'] % credentials['username']
+	
+	#youtube_feed = 'http://gdata.youtube.com/feeds/api/users/FocusCamTest/uploads/mgOKxPAOg2g'
+	#youtube_feed = 'http://gdata.youtube.com/feeds/api/users/default/uploads/Pu43mzXcw9Q' #mgOKxPAOg2g
+	#youtube_feed = '%s/Pu43mzXcw9Q' % youtube_feed
+		
 else:
 	sys.exit('Existing program')
 
@@ -57,14 +66,25 @@ else:
 if (__name__ == '__main__'):
 
 	fileops = fileops.FileOps(paths, movie_extension)
-	youtube = youtube.YouTube(credentials)
-	#youtube.Login()
-	#youtube.GetAndPrintVideoFeed(youtube_feed)
-	#youtube.GetAndPrintSingleVideo('Glny4jSciVI')
+	youtube = youtube.YouTube(credentials, tags)
 	
+	# get dev tag list
+	#youtube.GetDeveloperTagList(tags['developer'][0])
+	#sys.exit()
+
+	youtube.Login()
+	
+	# get all videos
+	#youtube.GetAndPrintVideoFeed(youtube_feed)
+	#sys.exit()
+	
+	#youtube.GetAndPrintSingleVideo('Glny4jSciVI')
+
 	while common.running:
 		
 		common.PrintLine(True)
+		
+		youtube.GetDeveloperTagList(tags['developer'][0])
 		
 		file_name = fileops.ProcessFolder()	
 		if (file_name == False):
@@ -76,7 +96,8 @@ if (__name__ == '__main__'):
 				ret = fileops.DeleteFile(full_path)
 				if (ret):
 					ret = fileops.ArchiveFile(file_name)
-			time.sleep(1)
+		
+		time.sleep(1)
 
 # ------------------------------------------------------------------------------
 # reference:
@@ -87,6 +108,14 @@ http://code.google.com/apis/youtube/1.0/developers_guide_python.html
 http://code.google.com/apis/youtube/2.0/developers_guide_protocol_video_feeds.html
 http://gdata-python-client.googlecode.com/svn/trunk/pydocs/gdata.youtube.html
 
+Dev Tag Issue?:
+http://markmail.org/thread/ekb6zmuwrnlk2tvd
+http://groups.jonzu.com/z_apis_adding-developer-tags.html#comments
+http://stackoverflow.com/questions/3677453/youtube-api-php-retrieving-a-private-video-under-my-account
+http://gdata.youtube.com/demo/
+
+Quota
+http://apiblog.youtube.com/2010/02/best-practices-for-avoiding-quota.html
 
 PyYaml:
 http://mikkel.elmholdt.dk/?p=4
