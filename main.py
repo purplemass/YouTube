@@ -49,7 +49,7 @@ if (not error):
 	
 	credentials = settings['credentials']
 	tags = settings['tags']
-	
+	test_mode = settings['test_mode']
 	youtube_feed = settings['youtube_feed'] % credentials['username']
 	
 	#youtube_feed = 'http://gdata.youtube.com/feeds/api/users/FocusCamTest/uploads/mgOKxPAOg2g'
@@ -66,7 +66,7 @@ else:
 if (__name__ == '__main__'):
 
 	fileops = fileops.FileOps(paths, movie_extension)
-	youtube = youtube.YouTube(credentials, tags)
+	youtube = youtube.YouTube(credentials, tags, test_mode)
 	
 	youtube.Login()
 	

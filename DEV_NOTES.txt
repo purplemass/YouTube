@@ -1,23 +1,27 @@
-------------------------------------
-Windows
-------------------------------------
-1 Download Python 2.7.1 [Windows x86 MSI Installer (2.7.1)] from http://www.python.org/download/releases/2.7.1/
+------------------------------------------------------------------------
+Installation on Windows
+------------------------------------------------------------------------
+1 Download Python 2.7.1 [Windows x86 MSI Installer (2.7.1)] from
+  http://www.python.org/download/releases/2.7.1/
 
 2 Install with default settings
 
-3 Download Youtube's gdata-python-client [gdata-2.0.14.zip] from http://code.google.com/p/gdata-python-client/downloads/detail?name=gdata-2.0.14.zip&can=2&q=
+3 Download Youtube's gdata-python-client [gdata-2.0.14.zip] from
+  http://code.google.com/p/gdata-python-client/downloads/detail?name=gdata-2.0.14.zip&can=2&q=
 
 4 Unzip file to the root of the C drive so a new folder is created here: C:\gdata-2.0.14\
 
 5 Set the PYTHONPATH environmental variable to C:\gdata-2.0.14\src\ (or add to it if variable exists):
   - Go to Control Panel -> System-> Advanced.
   - Click 'Environment Variables' button.
-  - In the 'System Variables' panel that appears, click New and enter PYTHONPATH in the 'Variable Name' field. In the 'Variable Value' field enter path to C:\gdata-2.0.14\src\
+  - In the 'System Variables' panel that appears, click New and enter PYTHONPATH in the 'Variable Name' field.
+    In the 'Variable Value' field enter path to C:\gdata-2.0.14\src\
 
-------------------------------------
-OS X
-------------------------------------
-1 Download Youtube's gdata-python-client [gdata-2.0.14.zip] from http://code.google.com/p/gdata-python-client/downloads/detail?name=gdata-2.0.14.zip&can=2&q=
+------------------------------------------------------------------------
+Installation on OSX
+------------------------------------------------------------------------
+1 Download Youtube's gdata-python-client [gdata-2.0.14.zip] from
+  http://code.google.com/p/gdata-python-client/downloads/detail?name=gdata-2.0.14.zip&can=2&q=
 
 2 Unzip file to a known location e.g. /gdata-2.0.14/
 
@@ -25,8 +29,22 @@ OS X
   - PYTHONPATH="/Users/purplemass/Downloads/gdata-2.0.14/src/gdata/:$PYTHONPATH"
   - export PYTHONPATH
 
-------------------------------------
-Developer Key used
-------------------------------------
-AI39si7d7xVRmwtUXlhRXWtDs5NQhBNbq7xfLW4ZtIx74yU9Azs0XLCrPTKr60uN-X8juceJpjThVpoVeal-1FT-INJwm7OccQ
+------------------------------------------------------------------------
+Running the application
+------------------------------------------------------------------------
+Windows: Double-click main.py
 
+OSX:
+- Open Terminal
+- Change directory to the application folder
+- Type: python main.py and press Enter
+
+------------------------------------------------------------------------
+Stopping the application
+------------------------------------------------------------------------
+Hold down the Control key and press C (<CTRL> + C)
+
+------------------------------------------------------------------------
+YouTube API Developer Key used for testing
+------------------------------------------------------------------------
+AI39si7d7xVRmwtUXlhRXWtDs5NQhBNbq7xfLW4ZtIx74yU9Azs0XLCrPTKr60uN-X8juceJpjThVpoVeal-1FT-INJwm7OccQ

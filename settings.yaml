@@ -2,20 +2,42 @@
 # Application
 # ---------------------------------------------------------------
 
+# All paths written with forward slashes '/'
+# All paths must include a trailing forward slash
+#
+# On Windows, server path can be either:
+#    a mapped drive: z:/path/to/movie/files/
+#    a network path: //network/path/to/movie/files/
+#
+# use_dates denotes whether the server path should be appended
+# with a date i.e. /path/to/server/20100501/
+#
 paths:
   server:          /Users/purplemass/Desktop/YouTube/
-  incoming:        ./incoming/
+  use_dates:       True
   archive:         ./archive/
+  local_incoming:  ./incoming/
   separator:       /
- 
+
+# Time in seconds to pause between each network query
+#
 pause_time:        5
+
+# test mode: will not upload to YouTube
+# set to True or False
+#
+test_mode:         True
 
 # ---------------------------------------------------------------
 # Files
 # ---------------------------------------------------------------
 
+# Do not include the dot '.' - only the extension e.g. mov
+#
 movie_extension:   mov
 
+# Tags used when uploading to YouTube
+#
 tags:
   title:           imag_dev
   description:     My description

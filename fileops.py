@@ -29,7 +29,7 @@ class FileOps():
 		self.common.log(1, 'FileOps initialised')
 		
 		self.path_server = paths['server']
-		self.path_incoming = paths['incoming']
+		self.path_incoming = paths['local_incoming']
 		self.path_archive = paths['archive']
 		self.path_separator = paths['separator']
 		

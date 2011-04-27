@@ -13,14 +13,16 @@ class YouTube():
 	
 	credentials = []
 	tags = []
+	test_mode = ''
 	
 	# ------------------------------------------------------------------------------
 	
-	def __init__(self, credentials, tags):
+	def __init__(self, credentials, tags, test_mode):
 		self.common.log(1, 'YouTube initialised')
 		
 		self.credentials = credentials
 		self.tags = tags
+		self.test_mode = test_mode
 		
 		self.yt_service = gdata.youtube.service.YouTubeService()
 		self.yt_service.ssl = False # The YouTube API does not currently support HTTPS/SSL access.
@@ -93,15 +95,17 @@ class YouTube():
 		self.common.log(2, 'Uploading file: %s' % video_file_location)
 				
 		try:
-			#new_entry = self.yt_service.InsertVideoEntry(video_entry, video_file_location)
+			if (not test_mode):
+				new_entry = self.yt_service.InsertVideoEntry(video_entry, video_file_location)
 			
-			# should we do this?!!
-# 			while True: 
-# 				upload_status = self.yt_service.CheckUploadStatus(new_entry) 
-# 				if upload_status is not None:
-# 					video_upload_state = upload_status[0]
-# 					detailed_message = upload_status[1]
-# 					print video_upload_state, detailed_message
+				# should we do this?!!
+				while True: 
+					upload_status = self.yt_service.CheckUploadStatus(new_entry) 
+					if upload_status is not None:
+						video_upload_state = upload_status[0]
+						detailed_message = upload_status[1]
+						print video_upload_state, detailed_message
+					
 			
 			self.common.log(2, 'File uploaded: %s' % video_file_location)
 			ret = True
