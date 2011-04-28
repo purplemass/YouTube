@@ -9,16 +9,17 @@
 #    a mapped drive: z:/path/to/movie/files/
 #    a network path: //network/path/to/movie/files/
 #
-# use_dates denotes whether the server path should be appended
-# with a date i.e. /path/to/server/20100501/
+# 'use_dates' below denotes whether the server path should be
+# appended with a date i.e. /path/to/server/20100501/
+# [This does not work at the moment]
 #
 paths:
-  server_incoming:     /Users/purplemass/Desktop/YouTube/
-  server_archive:  archive/
-  use_dates:       True
+  server_incoming: /path/to/server/incoming/
+  server_archive:  /path/to/server/archive/
   local_incoming:  ./incoming/
   local_archive:   ./archive/
   separator:       /
+  use_dates:       True
 
 # Time in seconds to pause between each network query
 #
@@ -27,23 +28,23 @@ pause_time:        5
 # test mode: will not upload to YouTube
 # set to True or False
 #
-test_mode:         True
+test_mode:         False
 
 # ---------------------------------------------------------------
 # Files
 # ---------------------------------------------------------------
 
-# Do not include the dot '.' - only the extension e.g. mov
+# Do not include the dot '.' - only the extension e.g. mov or mp4
 #
-movie_extension:   mov
+movie_extension:   mp4
 
 # Tags used when uploading to YouTube
 #
 tags:
-  title:           imag_dev
-  description:     My description
-  keywords:        cars, funny, imag_dev
-  category:        Sports
+  title:           FocusCam
+  description:     Description TBC
+  keywords:        Cars, Ford, Football, UEFA
+  category:        Autos
   developer:
     - imag_dev
     - imagination321
