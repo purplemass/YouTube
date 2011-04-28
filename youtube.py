@@ -175,8 +175,6 @@ class YouTube():
 			self.common.log(3, 'Error reading feed: %s' % (e[0]['reason']))
 			sys.exit(0)
 		
-		print self.feed
-		
 		for entry in self.feed.entry:
 			try:
 				self.PrintEntryDetails(entry)
@@ -188,7 +186,7 @@ class YouTube():
 	def PrintEntryDetails(self, entry):
 		self.common.PrintLine()
 
-		self.common.log(1, 'Title:\t%s' % entry.media.title.text)
+		self.common.log(1, 'Title:\t\t%s' % entry.media.title.text)
 		self.common.log(1, 'Published on:\t%s ' % entry.published.text)
 		self.common.log(1, 'ID:\t\t%s' % entry.id.text)
 		self.common.log(1, 'Description:\t%s' % entry.media.description.text)
