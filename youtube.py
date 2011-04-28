@@ -1,6 +1,7 @@
 # ------------------------------------------------------------------------------
 
 import sys
+import time
 import gdata.youtube
 import gdata.youtube.service
 
@@ -83,8 +84,8 @@ class YouTube():
 				new_entry = self.yt_service.InsertVideoEntry(video_entry, video_file_location)
 			
 				# should we do this?!!
-				upload_status0 = ''
-				while True:
+				upload_status0 = None
+				while upload_status0 is not None:
 					upload_status = self.yt_service.CheckUploadStatus(new_entry) 
 					if upload_status is not None:
 						video_upload_state = upload_status[0]
@@ -92,6 +93,7 @@ class YouTube():
 						if (upload_status <> upload_status0):
 							print video_upload_state, detailed_message
 							upload_status0 = upload_status
+					
 					time.sleep(1)
 					
 			

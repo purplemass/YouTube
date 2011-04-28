@@ -66,6 +66,7 @@ if (__name__ == '__main__'):
 	youtube = youtube.YouTube(credentials, tags, test_mode)
 	
 	youtube.Login()
+	#youtube.GetDeveloperTagList(tags['developer'][1])
 		
 	while common.running:
 		
@@ -82,7 +83,7 @@ if (__name__ == '__main__'):
 			if (ret):
 				ret = fileops.ArchiveFile(file_name)
 				
-		time.sleep(1)
+		time.sleep(2)
 
 # ------------------------------------------------------------------------------
 # reference:
