@@ -4,6 +4,7 @@
 
 import sys
 import time
+from datetime import datetime
 
 import commonops
 common = commonops.CommonOps()
@@ -52,10 +53,6 @@ if (not error):
 	test_mode = settings['test_mode']
 	youtube_feed = settings['youtube_feed'] % credentials['username']
 	
-	#youtube_feed = 'http://gdata.youtube.com/feeds/api/users/FocusCamTest/uploads/mgOKxPAOg2g'
-	#youtube_feed = 'http://gdata.youtube.com/feeds/api/users/default/uploads/Pu43mzXcw9Q' #mgOKxPAOg2g
-	#youtube_feed = '%s/Pu43mzXcw9Q' % youtube_feed
-		
 else:
 	sys.exit('Existing program')
 
@@ -69,31 +66,22 @@ if (__name__ == '__main__'):
 	youtube = youtube.YouTube(credentials, tags, test_mode)
 	
 	youtube.Login()
-	
-	# show tagged videos for testing:	
-	youtube.GetDeveloperTagList(tags['developer'][0])
-	
-	# get all videos
-	#youtube.GetAndPrintVideoFeed(youtube_feed)
-	#sys.exit()
-	
-	# get a single video
-	#youtube.GetAndPrintSingleVideo('Glny4jSciVI')
-
+		
 	while common.running:
 		
 		common.PrintLine(True)
+
+		now = datetime.now()
+		common.log(1, 'Date/Time:[T][T]%s' % now.strftime("%Y-%m-%d %H:%M:%S"))
 				
 		file_name = fileops.ProcessFolder()	
 		if (file_name == False):
 			time.sleep(pause_time)
 		else:
-			ret = youtube.UploadVideo(paths['incoming'] + file_name)
+			ret = youtube.UploadVideo(paths['local_incoming'] + file_name)
 			if (ret):
-				ret = fileops.DeleteFile(paths['server'] + file_name)
-				if (ret):
-					ret = fileops.ArchiveFile(file_name)
-		
+				ret = fileops.ArchiveFile(file_name)
+				
 		time.sleep(1)
 
 # ------------------------------------------------------------------------------
@@ -123,4 +111,24 @@ yaml.dump(settings, f)
 f.close()
 
 """
+
+# ------------------------------------------------------------------------------
+# code may be used later:
+# ------------------------------------------------------------------------------
+
+	#youtube_feed = 'http://gdata.youtube.com/feeds/api/users/FocusCamTest/uploads/mgOKxPAOg2g'
+	#youtube_feed = 'http://gdata.youtube.com/feeds/api/users/default/uploads/Pu43mzXcw9Q' #mgOKxPAOg2g
+	#youtube_feed = '%s/Pu43mzXcw9Q' % youtube_feed		
+
+	# show tagged videos for testing:	
+	#youtube.GetDeveloperTagList(tags['developer'][0])
+	
+	# get all videos
+	#youtube.GetAndPrintVideoFeed(youtube_feed)
+	#sys.exit()
+	
+	# get a single video
+	#youtube.GetAndPrintSingleVideo('Glny4jSciVI')
+
+
 # ------------------------------------------------------------------------------

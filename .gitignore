@@ -1,6 +1,7 @@
 .DS*
 ._*
 
+settings.yaml
 *.pyc
 _xtras/
 incoming/

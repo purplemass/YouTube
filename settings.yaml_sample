@@ -13,10 +13,11 @@
 # with a date i.e. /path/to/server/20100501/
 #
 paths:
-  server:          /Users/purplemass/Desktop/YouTube/
+  server_incoming:     /Users/purplemass/Desktop/YouTube/
+  server_archive:  archive/
   use_dates:       True
-  archive:         ./archive/
   local_incoming:  ./incoming/
+  local_archive:   ./archive/
   separator:       /
 
 # Time in seconds to pause between each network query

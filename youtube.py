@@ -42,7 +42,7 @@ class YouTube():
 			self.yt_service.client_id = self.credentials['client_id']
 			
 			self.yt_service.ProgrammaticLogin()
-			self.common.log(2, 'Logged in!')
+			self.common.log(2, 'Logged into YouTube')
 		
 		except:
 			self.common.log(3, 'Invalid username or password')
@@ -52,6 +52,9 @@ class YouTube():
 	# ------------------------------------------------------------------------------
 	
 	def UploadVideo(self, video_file_location):
+		self.common.PrintLine()
+		self.common.log(2, 'Uploading file:[T][T]%s' % video_file_location)
+
 		# prepare a media group object to hold our video's meta-data
 		my_media_group = gdata.media.Group(
 			title=gdata.media.Title(text=self.tags['title']),
@@ -63,51 +66,37 @@ class YouTube():
 						scheme='http://gdata.youtube.com/schemas/2007/categories.cat',
 						label=self.tags['category']
 					)
-# 					gdata.media.Category(
-# 						text='jacqui0',
-# 						label='jacqui0',
-# 						scheme='http://gdata.youtube.com/schemas/2007/developertags.cat'
-# 					),
-# 					gdata.media.Category(
-# 						text='jacqui1',
-# 						label='jacqui1',
-# 						scheme='http://gdata.youtube.com/schemas/2007/developertags.cat'
-# 					)
 				],
 				player=None
 		)
 		
-		# prepare a geo.where object to hold the geographical location
-		# of where the video was recorded
-		#where = gdata.geo.Where()
-		#where.set_location((37.0,-122.0))
-		
 		# create the gdata.youtube.YouTubeVideoEntry to be uploaded
-		video_entry = gdata.youtube.YouTubeVideoEntry(media=my_media_group) #, geo=where
+		video_entry = gdata.youtube.YouTubeVideoEntry(media=my_media_group)
 		
 		# developer's tags
 		developer_tags = self.tags['developer']
 		video_entry.AddDeveloperTags(developer_tags)
 		
-		#print 'DEV TAGS: %s' % video_entry.GetDeveloperTags()
-		
-		# upload
-		self.common.log(2, 'Uploading file: %s' % video_file_location)
-				
+		# upload				
 		try:
-			if (not test_mode):
+			if (not self.test_mode):
 				new_entry = self.yt_service.InsertVideoEntry(video_entry, video_file_location)
 			
 				# should we do this?!!
-				while True: 
+				upload_status0 = ''
+				while True:
 					upload_status = self.yt_service.CheckUploadStatus(new_entry) 
 					if upload_status is not None:
 						video_upload_state = upload_status[0]
 						detailed_message = upload_status[1]
-						print video_upload_state, detailed_message
+						if (upload_status <> upload_status0):
+							print video_upload_state, detailed_message
+							upload_status0 = upload_status
+					time.sleep(1)
 					
 			
-			self.common.log(2, 'File uploaded: %s' % video_file_location)
+			#self.common.log(2, 'File uploaded:[T][T]%s' % video_file_location)
+			self.common.log(2, 'File uploaded')
 			ret = True
 			
 		except gdata.youtube.service.YouTubeError, e:
@@ -122,22 +111,7 @@ class YouTube():
 		self.common.PrintLine()
 		self.common.log(1, 'Looking for developer tag: %s' % developer_tag)
 		
-		#self.yt_service.developer_key = self.credentials['dev_key']
-		
-		# OLDER
-		#uri = 'http://gdata.youtube.com/feeds/videos/-/%7Bhttp%3A%2F%2Fgdata.youtube.com%2Fschemas%2F2007%2Fdevelopertags.cat%7D' + developer_tag
-		
-		# NEW
 		uri = 'http://gdata.youtube.com/feeds/api/videos?category=%7Bhttp%3A%2F%2Fgdata.youtube.com%2Fschemas%2F2007%2Fdevelopertags.cat%7D' + developer_tag
-		
-		# WRONG
-		#uri = 'http://gdata.youtube.com/feeds/api/videos/-/%7Bhttp://gdata.youtube.com/schemas/2007/developertags.cat%7D' + developer_tag + '?v=2'
-		#uri = 'http://gdata.youtube.com/feeds/api/videos/-/{http://gdata.youtube.com/schemas/2007/developertags.cat}' + developer_tag + '?v=2'
-		
-		# not sure why these are wrong
-		#uri = 'http://gdata.youtube.com/feeds/api/videos/-/%7Bhttp%3A%2F%2Fgdata.youtube.com%2Fschemas%2F2007%2Fdevelopertags.cat%7D' + developer_tag + '?v=2'
-		#uri = 'http://gdata.youtube.com/feeds/api/videos?category={http://gdata.youtube.com/schemas/2007/developertags.cat}' + developer_tag + '?v=2'		        
-		#uri = 'http://gdata.youtube.com/feeds/api/videos/-/' + developer_tag + '?v=2'
 		
 		try:
 			feed = self.yt_service.GetYouTubeVideoFeed(uri)		
@@ -184,7 +158,6 @@ class YouTube():
 		print self.feed
 		
 		for entry in self.feed.entry:
-			#print entry
 			try:
 				self.PrintEntryDetails(entry)
 			except:
@@ -208,9 +181,14 @@ class YouTube():
 				self.common.log(1, 'Dev Tag:\t%s' % category.text)
 			c += 1
 
+		self.common.log(1, 'Duration:\t%s' % entry.media.duration.seconds)
+
+	# ------------------------------------------------------------------------------
+	# IGNORE BELOW - EXTRA CODE
+	# ------------------------------------------------------------------------------
+	
 		#self.common.log(1, 'Watch page:\t%s' % entry.media.player.url)
 		#self.common.log(1, 'Flash URL:\t%s' % entry.GetSwfUrl())
-		self.common.log(1, 'Duration:\t%s' % entry.media.duration.seconds)
 		
 		# non entry.media attributes
 		# normally not set:
@@ -227,4 +205,42 @@ class YouTube():
 		#	if 'isDefault' not in alternate_format.extension_attributes:
 		#		self.common.log(1, 'Other format:\t%s | url: %s ' % (alternate_format.type, alternate_format.url))
 
+# ------------------------------------------------------------------------------
+
+# 					gdata.media.Category(
+# 						text='jacqui0',
+# 						label='jacqui0',
+# 						scheme='http://gdata.youtube.com/schemas/2007/developertags.cat'
+# 					),
+# 					gdata.media.Category(
+# 						text='jacqui1',
+# 						label='jacqui1',
+# 						scheme='http://gdata.youtube.com/schemas/2007/developertags.cat'
+# 					)
+
+
+		# prepare a geo.where object to hold the geographical location
+		# of where the video was recorded
+		#where = gdata.geo.Where()
+		#where.set_location((37.0,-122.0))
+		
+		# create the gdata.youtube.YouTubeVideoEntry to be uploaded
+		#video_entry = gdata.youtube.YouTubeVideoEntry(media=my_media_group, geo=where)
+		
+		#print 'DEV TAGS: %s' % video_entry.GetDeveloperTags()
+
+# ------------------------------------------------------------------------------
+
+		# OLDER
+		#uri = 'http://gdata.youtube.com/feeds/videos/-/%7Bhttp%3A%2F%2Fgdata.youtube.com%2Fschemas%2F2007%2Fdevelopertags.cat%7D' + developer_tag
+		
+		# WRONG
+		#uri = 'http://gdata.youtube.com/feeds/api/videos/-/%7Bhttp://gdata.youtube.com/schemas/2007/developertags.cat%7D' + developer_tag + '?v=2'
+		#uri = 'http://gdata.youtube.com/feeds/api/videos/-/{http://gdata.youtube.com/schemas/2007/developertags.cat}' + developer_tag + '?v=2'
+		
+		# not sure why these are wrong
+		#uri = 'http://gdata.youtube.com/feeds/api/videos/-/%7Bhttp%3A%2F%2Fgdata.youtube.com%2Fschemas%2F2007%2Fdevelopertags.cat%7D' + developer_tag + '?v=2'
+		#uri = 'http://gdata.youtube.com/feeds/api/videos?category={http://gdata.youtube.com/schemas/2007/developertags.cat}' + developer_tag + '?v=2'		        
+		#uri = 'http://gdata.youtube.com/feeds/api/videos/-/' + developer_tag + '?v=2'
+		
 # ------------------------------------------------------------------------------

@@ -13,9 +13,10 @@ class FileOps():
 	
 	common = sys.modules['__main__'].common
 	
-	path_server = ''
-	path_incoming = ''
-	path_archive = ''
+	server_incoming = ''
+	server_archive = ''
+	local_incoming = ''
+	local_archive = ''
 	path_separator = ''
 	
 	movie_extension = ''
@@ -28,14 +29,17 @@ class FileOps():
 	def __init__(self, paths, movie_extension):
 		self.common.log(1, 'FileOps initialised')
 		
-		self.path_server = paths['server']
-		self.path_incoming = paths['local_incoming']
-		self.path_archive = paths['archive']
+		self.server_incoming = paths['server_incoming']
+		self.server_archive = paths['server_archive']
+		
+		self.local_incoming = paths['local_incoming']
+		self.local_archive = paths['local_archive']
+		
 		self.path_separator = paths['separator']
 		
 		self.movie_extension = movie_extension
 		
-		for folder in (self.path_incoming, self.path_archive):
+		for folder in (self.server_incoming, self.server_archive, self.local_incoming, self.local_archive):
 			ret = self.CreateFolder(folder)
 			if (ret == False):
 				sys.exit('Exiting application')
@@ -49,13 +53,12 @@ class FileOps():
 		file_to_process = self.GetOldestFile()
 		num = len(self.file_list)
 		
-		# log		
 		self.common.PrintLine()
-		self.common.log(2, 'Files to process: %s' % num)
+		self.common.log(2, 'Files to process:[T]%s' % num)
 			
 		if (num > 0):
-			#self.PrintFolder()
-			ret = self.CopyFile(self.path_server + file_to_process, self.path_incoming)
+			self.common.log(2, 'Processing file:[T]%s' % file_to_process)
+			ret = self.CopyFile(file_to_process, self.server_incoming, self.local_incoming)
 			if (ret):
 				return file_to_process
 		else:
@@ -66,19 +69,28 @@ class FileOps():
 	# ------------------------------------------------------------------------------
 	
 	def ArchiveFile(self, file_name):
-		self.common.log(2, 'Archiving file: %s' % file_name)
-					
-		now = datetime.now()
-		folder_name = '%s%s%s' % (self.path_archive, now.strftime("%Y%m%d"), self.path_separator)
+		self.common.PrintLine()
+		self.common.log(2, 'Archiving file')		
 		
-		ret = self.CreateFolder(folder_name)
-		
+		# server
+		server_folder = self.GetDate(self.server_archive)
+		ret = self.CreateFolder(server_folder)
 		if (ret):
-			ret = self.CopyFile(self.path_incoming + file_name, folder_name + file_name)
-			if (ret):
-				ret = self.DeleteFile(self.path_incoming + file_name)
+			ret = self.MoveFile(file_name, self.server_incoming, server_folder)
+		
+		# local
+		local_folder = self.GetDate(self.local_archive)
+		ret = self.CreateFolder(local_folder)
+		if (ret):
+			ret = self.MoveFile(file_name, self.local_incoming, local_folder)
 		
 		return ret
+
+	# ------------------------------------------------------------------------------
+
+	def GetDate(self, path):
+		now = datetime.now()
+		return '%s%s%s' % (path, now.strftime("%Y%m%d"), self.path_separator)
 	
 	# ------------------------------------------------------------------------------
 
@@ -109,16 +121,16 @@ class FileOps():
 	# ------------------------------------------------------------------------------
 	
 	def ScanFolder(self):
-		self.common.log(1, 'Scanning folder %s' % self.path_server)
+		self.common.log(1, 'Scanning folder[T][T]%s' % self.server_incoming)
 		
 		self.file_list = {}
 		
 		try:
 			# do not use this on Windows:
-			# dircache.listdir(self.path_server)
+			# dircache.listdir(self.server_incoming)
 			# as it's cached (obviously!)
 			#
-			myfilelist = os.listdir(self.path_server)
+			myfilelist = os.listdir(self.server_incoming)
 		
 		except OSError:
 			self.common.log(3, 'Cannot connect to folder')
@@ -128,7 +140,7 @@ class FileOps():
 		cc = 0
 		for filename in myfilelist:
 			cc += 1
-			myfile = os.path.join(self.path_server, filename)
+			myfile = os.path.join(self.server_incoming, filename)
 			
 			# check extension
 			if (myfile.endswith('.' + self.movie_extension)):
@@ -149,7 +161,7 @@ class FileOps():
 		ret = True
 		try:
 			os.mkdir(folder)
-			self.common.log(2, 'Folder created: %s' % folder)			
+			self.common.log(2, 'Folder created:[T][T]%s' % folder)			
 		except OSError as (errno, strerror):
 			if (errno == 17 or errno == 183): #17 for OSX, 183 for Windows
 				#self.common.log(1, 'Folder exists: %s' % folder)
@@ -162,15 +174,35 @@ class FileOps():
 	
 	# ------------------------------------------------------------------------------
 	
-	def CopyFile(self, source, target):
-		self.common.log(1, 'Copying file: %s to %s' % (source, target))
+	def CopyFile(self, filename, source, target):
+		#self.common.log(1, 'Copying file:[T][T]%s to %s' % (source, target))
+		self.common.log(1, 'Copying file:')
+		self.common.log(1, '- from:[T][T][T]%s' % source)
+		self.common.log(1, '- to[T][T][T]%s' % target)
 			
 		try:
-			shutil.copy2(source, target)
+			shutil.copy2(source + filename, target + filename)
 			#self.common.log(1, 'File copied: %s' % source)
 			ret = True
 		except IOError as (errno, strerror):
-			self.common.log(3, 'Could not copy file: %s (%s)' % (source, strerror))
+			self.common.log(3, 'Could not copy file: %s (%s)' % (filename, strerror))
+			ret = False	
+		
+		return ret
+	
+	# ------------------------------------------------------------------------------
+	
+	def MoveFile(self, filename, source, target):
+		self.common.log(1, 'Moving file:')
+		self.common.log(1, '- from:[T][T][T]%s' % source)
+		self.common.log(1, '- to[T][T][T]%s' % target)
+			
+		try:
+			shutil.move(source + filename, target + filename)
+			#self.common.log(1, 'File moved: %s' % source)
+			ret = True
+		except IOError as (errno, strerror):
+			self.common.log(3, 'Could not move file: %s (%s)' % (filename, strerror))
 			ret = False	
 		
 		return ret
@@ -178,7 +210,7 @@ class FileOps():
 	# ------------------------------------------------------------------------------
 	
 	def DeleteFile(self, file_name):
-		self.common.log(1, 'Deleting file: %s' % file_name)
+		self.common.log(1, 'Deleting file:[T][T]%s' % file_name)
 			
 		try:
 			os.remove(file_name)

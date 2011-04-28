@@ -29,11 +29,17 @@ class CommonOps():
 	# ------------------------------------------------------------------------------
 	
 	def log(self, priority, msg):
+		# priorities:
+		# 1 = debug
+		# 2 = notice
+		# 3 = error
+		#
 		if priority == 3:
 			error = 'ERROR '
 		else:
 			error = ''
-		
-		print '%s %s%s' % (priority, error, msg)
+		msg = msg.replace('[T]', '\t')
+		#print '%s %s%s' % (priority, error, msg)
+		print '%s%s' % (error, msg)
 
 # ------------------------------------------------------------------------------
