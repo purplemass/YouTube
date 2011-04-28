@@ -67,6 +67,7 @@ if (__name__ == '__main__'):
 	
 	youtube.Login()
 	#youtube.GetDeveloperTagList(tags['developer'][1])
+	youtube.GetAndPrintVideoFeed(youtube_feed)
 		
 	while common.running:
 		

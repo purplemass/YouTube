@@ -41,13 +41,14 @@ movie_extension:   mp4
 # Tags used when uploading to YouTube
 #
 tags:
-  title:           FocusCam
-  description:     Description TBC
+  title:           FocusCam yyyymmdd hhmm
+  description:     Description [TBC]
   keywords:        Cars, Ford, Football, UEFA
   category:        Autos
   developer:
-    - imag_dev
-    - imagination321
+    - date=yyyymmdd
+    - videotime=hhmm
+    - videoslot=hhmm
 
 # ---------------------------------------------------------------
 # YouTube account credentials
