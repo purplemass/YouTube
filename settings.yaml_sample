@@ -42,8 +42,8 @@ movie_extension:   mp4
 #
 tags:
   title:           FocusCam yyyymmdd hhmm
-  description:     Description [TBC]
-  keywords:        Cars, Ford, Football, UEFA
+  description:     Ford presents the FocusCam experience, capture and share your moment, as part of the week-long celebrations at the 2011 UEFA Champions Festival in Hyde Park, London.
+  keywords:        Ford, Focus, Football, UEFA, UCL, Champions league, FocusCam, Hyde park, Final
   category:        Autos
   developer:
     - date=yyyymmdd

@@ -62,12 +62,23 @@ else:
 
 if (__name__ == '__main__'):
 
-	fileops = fileops.FileOps(paths, movie_extension)
-	youtube = youtube.YouTube(credentials, tags, test_mode)
+	youtube = youtube.YouTube(credentials, tags, test_mode)	
+
+	# if arg is list then list all videos for our 
+	# YouTube account - then exit
+	#
+	try:
+		arg = sys.argv[1]		
+	except:
+		arg = ''
 	
+	if arg == 'list':
+		#youtube.GetDeveloperTagList('imag_dev')
+		youtube.GetAndPrintVideoFeed(youtube_feed)
+		sys.exit('Exiting program')
+	
+	fileops = fileops.FileOps(paths, movie_extension)
 	youtube.Login()
-	#youtube.GetDeveloperTagList('imag_dev')
-	#youtube.GetAndPrintVideoFeed(youtube_feed)
 		
 	while common.running:
 		
