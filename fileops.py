@@ -53,10 +53,10 @@ class FileOps():
 		file_to_process = self.GetOldestFile()
 		num = len(self.file_list)
 		
-		self.common.PrintLine()
 		self.common.log(2, 'Files to process:[T]%s' % num)
 			
 		if (num > 0):
+			self.common.PrintLine()
 			self.common.log(2, 'Processing file:[T]%s' % file_to_process)
 			ret = self.CopyFile(file_to_process, self.server_incoming, self.local_incoming)
 			if (ret):

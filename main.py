@@ -51,6 +51,7 @@ if (not error):
 	credentials = settings['credentials']
 	tags = settings['tags']
 	test_mode = settings['test_mode']
+	pattern_in_file = settings['pattern_in_file']
 	youtube_feed = settings['youtube_feed'] % credentials['username']
 	
 else:
@@ -62,7 +63,7 @@ else:
 
 if (__name__ == '__main__'):
 
-	youtube = youtube.YouTube(credentials, tags, test_mode)	
+	youtube = youtube.YouTube(credentials, tags, pattern_in_file, test_mode)	
 
 	# if arg is list then list all videos for our 
 	# YouTube account - then exit

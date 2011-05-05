@@ -25,10 +25,36 @@ paths:
 #
 pause_time:        5
 
-# test mode: will not upload to YouTube
+# test mode: will not upload to YouTube but will carry out
+# all other operations (scanning, copying, archiving etc.)
 # set to True or False
 #
 test_mode:         False
+
+# ---------------------------------------------------------------
+# YouTube account credentials
+# ---------------------------------------------------------------
+
+credentials:
+  username:        FocusCamTest
+  password:        focuscam
+  application:     my-example-application
+  dev_key:         AI39si7d7xVRmwtUXlhRXWtDs5NQhBNbq7xfLW4ZtIx74yU9Azs0XLCrPTKr60uN-X8juceJpjThVpoVeal-1FT-INJwm7OccQ
+  client_id:       FocusCamTest
+
+# ---------------------------------------------------------------
+# Tags used when uploading to YouTube
+# ---------------------------------------------------------------
+
+tags:
+  title:           FocusCam yyyymmdd hhmm
+  description:     Ford presents the FocusCam experience, capture and share your moment, as part of the week-long celebrations at the 2011 UEFA Champions Festival in Hyde Park, London.
+  keywords:        Ford, Focus, Football, UEFA, UCL, Champions league, FocusCam, Hyde Park, Final
+  category:        Autos
+  developer:
+    - date=yyyymmdd
+    - videotime=hhmm
+    - videoslot=hhmm
 
 # ---------------------------------------------------------------
 # Files
@@ -38,29 +64,9 @@ test_mode:         False
 #
 movie_extension:   mp4
 
-# Tags used when uploading to YouTube
+# Pattern to search for to find date/time in the file name
 #
-tags:
-  title:           FocusCam yyyymmdd hhmm
-  description:     Ford presents the FocusCam experience, capture and share your moment, as part of the week-long celebrations at the 2011 UEFA Champions Festival in Hyde Park, London.
-  keywords:        Ford, Focus, Football, UEFA, UCL, Champions league, FocusCam, Hyde park, Final
-  category:        Autos
-  developer:
-    - date=yyyymmdd
-    - videotime=hhmm
-    - videoslot=hhmm
-
-# ---------------------------------------------------------------
-# YouTube account credentials
-# ---------------------------------------------------------------
-
-credentials:
-  username:        FocusCamTest
-  password:        focuscam
-  username_test:   eaglerocktv
-  application:     my-example-application
-  dev_key:         AI39si7d7xVRmwtUXlhRXWtDs5NQhBNbq7xfLW4ZtIx74yU9Azs0XLCrPTKr60uN-X8juceJpjThVpoVeal-1FT-INJwm7OccQ
-  client_id:       FocusCamTest
+pattern_in_file:   FocusCam_
 
 # ---------------------------------------------------------------
 # For testing only

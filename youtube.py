@@ -15,15 +15,17 @@ class YouTube():
 	
 	credentials = []
 	tags = []
+	pattern_in_file = ''
 	test_mode = ''
 	
 	# ------------------------------------------------------------------------------
 	
-	def __init__(self, credentials, tags, test_mode):
+	def __init__(self, credentials, tags, pattern_in_file, test_mode):
 		self.common.log(1, 'YouTube initialised')
 		
 		self.credentials = credentials
 		self.tags = tags
+		self.pattern_in_file = pattern_in_file
 		self.test_mode = test_mode
 		
 		self.yt_service = gdata.youtube.service.YouTubeService()
@@ -50,18 +52,48 @@ class YouTube():
 			self.common.log(3, 'Invalid username or password')
 			sys.exit(0)
 
-
+	# ------------------------------------------------------------------------------
+	
+	def Get_Date_Time(self, video_file_location):
+		# find pattern in filename
+		n = video_file_location.find(self.pattern_in_file)
+		n = n + len(self.pattern_in_file)
+		
+		try:
+			# based on filename: FocusCam_02052011_1720
+			my_date = video_file_location[n:n+8]
+			my_date = my_date[4:8] + my_date[2:4] + my_date[0:2]
+			my_date_dashes = my_date[4:8] + '-' + my_date[2:4] + '-' + my_date[0:2]
+			my_time = video_file_location[n+9:n+13]
+		except:
+			# based on time
+			now = datetime.now()
+			my_date = now.strftime("%Y%m%d")
+			my_date_dashes = now.strftime("%Y-%m-%d")
+			my_time = now.strftime("%H%M") # %S
+		
+		hours = my_time[0:2]
+		minutes = my_time[2:4]
+		if int(minutes) < 30:
+			minutes = '00'
+		else:
+			minutes = '30'
+		
+		my_time_slot = '%s%s' % (hours, minutes)
+		
+		return (my_date, my_date_dashes, my_time, my_time_slot)
+	
 	# ------------------------------------------------------------------------------
 	
 	def UploadVideo(self, video_file_location):
 		self.common.PrintLine()
 		self.common.log(2, 'Uploading file:[T][T]%s' % video_file_location)
 		
-		now = datetime.now()
+		(my_date, my_date_dashes, my_time, my_time_slot) = self.Get_Date_Time(video_file_location)
 		
 		video_title = self.tags['title']
-		video_title = video_title.replace('yyyymmdd', now.strftime("%Y-%m-%d"))
-		video_title = video_title.replace('hhmm', now.strftime("%H:%M")) #:%S
+		video_title = video_title.replace('yyyymmdd', my_date_dashes)
+		video_title = video_title.replace('hhmm', my_time)
 		
 		# prepare a media group object to hold our video's meta-data
 		my_media_group = gdata.media.Group(
@@ -85,19 +117,19 @@ class YouTube():
 		developer_tags = self.tags['developer']
 		new_dev_tags = []
 		for dtag in developer_tags:
-			dtag = dtag.replace('date=yyyymmdd', 'date=' + now.strftime("%Y%m%d"))
-			dtag = dtag.replace('videotime=hhmm', 'videotime=' + now.strftime("%H%M"))
-			dtag = dtag.replace('videoslot=hhmm', 'videoslot=' + now.strftime("%H") + '00')
+			dtag = dtag.replace('date=yyyymmdd', 'date=' + my_date)
+			dtag = dtag.replace('videotime=hhmm', 'videotime=' + my_time)
+			dtag = dtag.replace('videoslot=hhmm', 'videoslot=' + my_time_slot)
 			new_dev_tags.append(dtag)
 			
 		video_entry.AddDeveloperTags(new_dev_tags)
 		
-		#for i in video_entry.GetDeveloperTags():
-		#	print i
-		#sys.exit()
+		for dev_tag in video_entry.GetDeveloperTags():
+			self.common.log(1, '- with Dev tag:[T][T]%s' % (dev_tag.text))
 		
 		# upload				
 		try:
+			self.common.log(1, '... this may take a few minutes ...')
 			if (not self.test_mode):
 				new_entry = self.yt_service.InsertVideoEntry(video_entry, video_file_location)
 			
@@ -190,7 +222,7 @@ class YouTube():
 		self.common.log(1, 'Published on:\t%s ' % entry.published.text)
 		self.common.log(1, 'ID:\t\t%s' % entry.id.text)
 		self.common.log(1, 'Description:\t%s' % entry.media.description.text)
-		self.common.log(1, 'Keywords\t%s' % entry.media.keywords.text)
+		self.common.log(1, 'Keywords:\t%s' % entry.media.keywords.text)
 		self.common.log(1, 'Category:\t%s' % entry.media.category[0].text)
 		
 		c = 1
