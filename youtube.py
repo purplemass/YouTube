@@ -61,7 +61,7 @@ class YouTube():
 		
 		video_title = self.tags['title']
 		video_title = video_title.replace('yyyymmdd', now.strftime("%Y-%m-%d"))
-		video_title = video_title.replace('hhmm', now.strftime("%H:%M:%S"))
+		video_title = video_title.replace('hhmm', now.strftime("%H:%M")) #:%S
 		
 		# prepare a media group object to hold our video's meta-data
 		my_media_group = gdata.media.Group(
@@ -85,9 +85,9 @@ class YouTube():
 		developer_tags = self.tags['developer']
 		new_dev_tags = []
 		for dtag in developer_tags:
-			dtag = dtag.replace('date=yyyymmdd', 'date=' + now.strftime("%Y-%m-%d"))
-			dtag = dtag.replace('videotime=hhmm', 'videotime=' + now.strftime("%H:%M"))
-			dtag = dtag.replace('videoslot=hhmm', 'videoslot=' + now.strftime("%H") + ':00')
+			dtag = dtag.replace('date=yyyymmdd', 'date=' + now.strftime("%Y%m%d"))
+			dtag = dtag.replace('videotime=hhmm', 'videotime=' + now.strftime("%H%M"))
+			dtag = dtag.replace('videoslot=hhmm', 'videoslot=' + now.strftime("%H") + '00')
 			new_dev_tags.append(dtag)
 			
 		video_entry.AddDeveloperTags(new_dev_tags)

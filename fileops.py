@@ -179,7 +179,7 @@ class FileOps():
 		self.common.log(1, 'Copying file:')
 		self.common.log(1, '- from:[T][T][T]%s' % source)
 		self.common.log(1, '- to[T][T][T]%s' % target)
-			
+		
 		try:
 			shutil.copy2(source + filename, target + filename)
 			#self.common.log(1, 'File copied: %s' % source)
