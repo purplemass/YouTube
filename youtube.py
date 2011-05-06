@@ -68,7 +68,7 @@ class YouTube():
 			my_date = date[4:8] + date[2:4] + date[0:2]
 			my_date_dashes = date[0:2] + '-' + date[2:4] + '-' + date[4:8]
 			my_time = filename[n+9:n+13]
-			my_time_dashes = filename[n+9:n+11] + ':' + filename[n+11:n+13]
+			my_time_dashed = filename[n+9:n+11] + ':' + filename[n+11:n+13]
 		else:
 			# based on current time
 			now = datetime.now()
