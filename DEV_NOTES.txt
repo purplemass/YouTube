@@ -35,9 +35,12 @@ Installation on OSX
 
 - Unzip file to a known location e.g. /gdata-2.0.14/
 
-- Set the PYTHONPATH environmental variable to /gdata-2.0.14/src/:
-  - PYTHONPATH="/Users/purplemass/Downloads/gdata-2.0.14/src/gdata/:$PYTHONPATH"
-  - export PYTHONPATH
+- Using terminal set the PYTHONPATH environmental variable to /gdata-2.0.14/src/.
+  For example*:
+  $ PYTHONPATH="/gdata-2.0.14/src/:$PYTHONPATH"
+  $ export PYTHONPATH
+
+* Dollar sign above ($) denotes the Terminal command line prompt
 
 
 ------------------------------------------------------------------------
