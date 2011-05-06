@@ -245,11 +245,17 @@ class YouTube():
 			self.common.log(3, 'Error reading feed: %s' % (e[0]['reason']))
 			sys.exit(0)
 		
+		num = 0
 		for entry in self.feed.entry:
 			try:
 				self.PrintEntryDetails(entry)
 			except:
 				self.common.log(1, '--content ignored--')
+			num += 1
+			
+		self.common.PrintLine()
+		self.common.log(1, 'Total videos:[T]%s' % num)	
+		self.common.PrintLine()
 	
 	# ------------------------------------------------------------------------------
 	
