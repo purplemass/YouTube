@@ -16,16 +16,18 @@ class YouTube():
 	credentials = []
 	tags = []
 	pattern_in_file = ''
+	check_status = False
 	test_mode = ''
 	
 	# ------------------------------------------------------------------------------
 	
-	def __init__(self, credentials, tags, pattern_in_file, test_mode):
+	def __init__(self, credentials, tags, pattern_in_file, check_status, test_mode):
 		self.common.log(1, 'YouTube initialised')
 		
 		self.credentials = credentials
 		self.tags = tags
 		self.pattern_in_file = pattern_in_file
+		self.check_status = check_status
 		self.test_mode = test_mode
 		
 		self.yt_service = gdata.youtube.service.YouTubeService()
@@ -54,23 +56,26 @@ class YouTube():
 
 	# ------------------------------------------------------------------------------
 	
-	def Get_Date_Time(self, video_file_location):
+	def Get_Date_Time(self, filename):
 		# find pattern in filename
-		n = video_file_location.find(self.pattern_in_file)
-		n = n + len(self.pattern_in_file)
+		n = filename.find(self.pattern_in_file)
 		
-		try:
+		if (n > -1):
 			# based on filename: FocusCam_02052011_1720
-			my_date = video_file_location[n:n+8]
-			my_date = my_date[4:8] + my_date[2:4] + my_date[0:2]
-			my_date_dashes = my_date[4:8] + '-' + my_date[2:4] + '-' + my_date[0:2]
-			my_time = video_file_location[n+9:n+13]
-		except:
-			# based on time
+			n = n + len(self.pattern_in_file)
+			
+			date = filename[n:n+8]
+			my_date = date[4:8] + date[2:4] + date[0:2]
+			my_date_dashes = date[0:2] + '-' + date[2:4] + '-' + date[4:8]
+			my_time = filename[n+9:n+13]
+			my_time_dashes = filename[n+9:n+11] + ':' + filename[n+11:n+13]
+		else:
+			# based on current time
 			now = datetime.now()
 			my_date = now.strftime("%Y%m%d")
-			my_date_dashes = now.strftime("%Y-%m-%d")
-			my_time = now.strftime("%H%M") # %S
+			my_date_dashes = now.strftime("%d-%m-%Y")
+			my_time = now.strftime("%H%M")
+			my_time_dashed = now.strftime("%H:%M")
 		
 		hours = my_time[0:2]
 		minutes = my_time[2:4]
@@ -81,7 +86,7 @@ class YouTube():
 		
 		my_time_slot = '%s%s' % (hours, minutes)
 		
-		return (my_date, my_date_dashes, my_time, my_time_slot)
+		return (my_date, my_date_dashes, my_time, my_time_dashed, my_time_slot)
 	
 	# ------------------------------------------------------------------------------
 	
@@ -89,11 +94,11 @@ class YouTube():
 		self.common.PrintLine()
 		self.common.log(2, 'Uploading file:[T][T]%s' % video_file_location)
 		
-		(my_date, my_date_dashes, my_time, my_time_slot) = self.Get_Date_Time(video_file_location)
+		(my_date, my_date_dashes, my_time, my_time_dashed, my_time_slot) = self.Get_Date_Time(video_file_location)
 		
 		video_title = self.tags['title']
 		video_title = video_title.replace('yyyymmdd', my_date_dashes)
-		video_title = video_title.replace('hhmm', my_time)
+		video_title = video_title.replace('hhmm', my_time_dashed)
 		
 		# prepare a media group object to hold our video's meta-data
 		my_media_group = gdata.media.Group(
@@ -127,34 +132,67 @@ class YouTube():
 		for dev_tag in video_entry.GetDeveloperTags():
 			self.common.log(1, '- with Dev tag:[T][T]%s' % (dev_tag.text))
 		
-		# upload				
+		# upload
+		video_uploaded = ''
+		
 		try:
 			self.common.log(1, '... this may take a few minutes ...')
 			if (not self.test_mode):
-				new_entry = self.yt_service.InsertVideoEntry(video_entry, video_file_location)
-			
-				# should we do this?!!
-				upload_status0 = None
-				while upload_status0 is not None:
-					upload_status = self.yt_service.CheckUploadStatus(new_entry) 
-					if upload_status is not None:
-						video_upload_state = upload_status[0]
-						detailed_message = upload_status[1]
-						if (upload_status <> upload_status0):
-							print video_upload_state, detailed_message
-							upload_status0 = upload_status
-					
-					time.sleep(1)
-					
+				video_uploaded = self.yt_service.InsertVideoEntry(video_entry, video_file_location)
 			
 			#self.common.log(2, 'File uploaded:[T][T]%s' % video_file_location)
 			self.common.log(2, 'File uploaded')
 			ret = True
-			
+		
 		except gdata.youtube.service.YouTubeError, e:
 			self.common.log(3, 'Could not upload file: %s (%s)' % (video_file_location, e[0]['reason']))
+			video_uploaded = ''
 			ret = False
 
+		# check status of uploaded video
+		if (self.check_status == False):
+			return ret
+		
+		self.common.PrintLine()
+		self.common.log(2, 'Checking upload status on YouTube')
+		
+		try:
+			video_id = video_uploaded.id.text
+			n = video_id.rfind('/')
+			video_id = video_id[n+1:len(video_id)]
+		except:
+			video_id = ''
+		
+		upload_status_rem = 'not uploaded'
+		
+		if (video_id <> ''):
+			while True:
+				try:
+					upload_status = self.yt_service.CheckUploadStatus(video_id=video_id)
+				except:
+					self.common.log(3, 'Could not get status on uploaded file.')
+					break
+				
+				if upload_status is not None:
+					my_state = upload_status[0]
+					my_message = upload_status[1]
+					if my_state == 'rejected':
+						upload_status_rem = 'rejected (%s)' % my_message
+						# MUST DEAL WITH THIS!!
+						#ret = False
+						break;		
+					else:
+						print my_state, my_message, type(my_message)
+						#self.common.log(1, '[T][T][T]%s' % (my_state, my_message))
+					
+				else:
+					upload_status_rem = 'uploaded'
+					break
+				
+				time.sleep(3)
+		
+		self.common.log(2, 'Uploaded file status:[T]%s' % upload_status_rem)
+		
 		return ret
 	
 	# ------------------------------------------------------------------------------

@@ -25,6 +25,12 @@ paths:
 #
 pause_time:        5
 
+# Should we check the status of the uploaded file? (True/False)
+# This will add to processing of each file but we can find
+# duplicates and deal with them
+#
+check_status:      True
+
 # test mode: will not upload to YouTube but will carry out
 # all other operations (scanning, copying, archiving etc.)
 # set to True or False
@@ -49,7 +55,7 @@ credentials:
 tags:
   title:           FocusCam yyyymmdd hhmm
   description:     Ford presents the FocusCam experience, capture and share your moment, as part of the week-long celebrations at the 2011 UEFA Champions Festival in Hyde Park, London.
-  keywords:        Ford, Focus, Football, UEFA, UCL, Champions league, FocusCam, Hyde Park, Final
+  keywords:        Ford, Focus, Football, UEFA, UCL, Champions League, FocusCam, Hyde Park, Final
   category:        Autos
   developer:
     - date=yyyymmdd
