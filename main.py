@@ -6,16 +6,13 @@ import sys
 import time
 from datetime import datetime
 
-import commonops
-common = commonops.CommonOps()
-
-import fileops
-import youtube
 import yaml
 
 # ------------------------------------------------------------------------------
 # get settings
 # ------------------------------------------------------------------------------
+
+date_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
 error = False
 settings_file = 'settings.yaml'
@@ -39,22 +36,33 @@ except:
 	error = True
 
 # ------------------------------------------------------------------------------
+# import our classes
+# ------------------------------------------------------------------------------
+
+import commonops
+common = commonops.CommonOps()
+
+import fileops
+import youtube
+
+# ------------------------------------------------------------------------------
 # process settings
 # ------------------------------------------------------------------------------
 
 if (not error):
+	# main vars
 	paths = settings['paths']
 	movie_extension = settings['movie_extension']
-	
 	pause_time = settings['pause_time']
-	
 	credentials = settings['credentials']
-	tags = settings['tags']
-	test_mode = settings['test_mode']
-	pattern_in_file = settings['pattern_in_file']
-	check_status = settings['check_status']
+	test_mode = settings['test_mode']	
 	youtube_feed = settings['youtube_feed'] % credentials['username']
 	
+	# YouTube vars 
+	tags = settings['tags']
+	pattern_in_file = settings['pattern_in_file']
+	check_status = settings['check_status']
+	dev_tag_to_key = settings['dev_tag_to_key']
 else:
 	sys.exit('Existing program')
 
@@ -63,8 +71,14 @@ else:
 # ------------------------------------------------------------------------------
 
 if (__name__ == '__main__'):
-
-	youtube = youtube.YouTube(credentials, tags, pattern_in_file, check_status, test_mode)	
+	# YouTube class
+	youtube = youtube.YouTube(
+								credentials,
+								tags,
+								pattern_in_file,
+								check_status,
+								dev_tag_to_key,
+								test_mode)	
 
 	# if arg is list then list all videos for our 
 	# YouTube account - then exit
@@ -79,17 +93,18 @@ if (__name__ == '__main__'):
 		youtube.GetAndPrintVideoFeed(youtube_feed)
 		sys.exit('Exiting program')
 	
+ 	youtube.Login()
 	fileops = fileops.FileOps(paths, movie_extension)
-	youtube.Login()
-		
+	
 	while common.running:
-		
 		common.PrintLine(True)
-
-		now = datetime.now()
-		common.log(1, 'Date/Time:[T][T]%s' % now.strftime("%Y-%m-%d %H:%M:%S"))
+		
+		# write date/time
+		date_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+		common.log(1, 'Date/Time:[T][T]%s' % date_time)
 				
 		file_name = fileops.ProcessFolder()	
+		
 		if (file_name == False):
 			time.sleep(pause_time)
 		else:

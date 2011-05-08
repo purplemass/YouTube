@@ -18,6 +18,7 @@ paths:
   server_archive:  /path/to/server/archive/
   local_incoming:  ./incoming/
   local_archive:   ./archive/
+  local_log:       ./logs/
   separator:       /
   use_dates:       True
 
@@ -30,6 +31,14 @@ pause_time:        5
 # duplicates and deal with them
 #
 check_status:      True
+
+# do we write the dev tags to as keywords
+#
+dev_tag_to_key:    True
+
+# write logs to file
+#
+write_log:         True
 
 # test mode: will not upload to YouTube but will carry out
 # all other operations (scanning, copying, archiving etc.)
@@ -44,7 +53,7 @@ test_mode:         False
 credentials:
   username:        FocusCamTest
   password:        focuscam
-  application:     my-example-application
+  application:     focuscam-uploader-application
   dev_key:         AI39si7d7xVRmwtUXlhRXWtDs5NQhBNbq7xfLW4ZtIx74yU9Azs0XLCrPTKr60uN-X8juceJpjThVpoVeal-1FT-INJwm7OccQ
   client_id:       FocusCamTest
 
@@ -54,7 +63,7 @@ credentials:
 
 tags:
   title:           FocusCam yyyymmdd hhmm
-  description:     Ford presents the FocusCam experience, capture and share your moment, as part of the week-long celebrations at the 2011 UEFA Champions Festival in Hyde Park, London.
+  description:     Focus Cam, an innovative camera-based activation, inspired by the camera technology in the all-new Ford Focus, captures your very own UEFA Champions League moment. 21-28 May 2011, UEFA Champions Festival in Hyde Park, London.
   keywords:        Ford, Focus, Football, UEFA, UCL, Champions League, FocusCam, Hyde Park, Final
   category:        Autos
   developer:

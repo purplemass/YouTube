@@ -11,12 +11,14 @@ class FileOps():
 
 	# ------------------------------------------------------------------------------
 	
+	mainmodule = sys.modules['__main__']
 	common = sys.modules['__main__'].common
 	
 	server_incoming = ''
 	server_archive = ''
 	local_incoming = ''
 	local_archive = ''
+	local_log = ''
 	path_separator = ''
 	
 	movie_extension = ''
@@ -28,18 +30,22 @@ class FileOps():
 	
 	def __init__(self, paths, movie_extension):
 		self.common.log(1, 'FileOps initialised')
-		
 		self.server_incoming = paths['server_incoming']
 		self.server_archive = paths['server_archive']
 		
 		self.local_incoming = paths['local_incoming']
 		self.local_archive = paths['local_archive']
 		
+		self.local_log = paths['local_log']
+		
 		self.path_separator = paths['separator']
 		
 		self.movie_extension = movie_extension
 		
-		for folder in (self.server_incoming, self.server_archive, self.local_incoming, self.local_archive):
+		for folder in (self.server_incoming, self.server_archive, 
+						self.local_incoming, self.local_archive,
+						self.local_log
+						):
 			ret = self.CreateFolder(folder)
 			if (ret == False):
 				sys.exit('Exiting application')
@@ -73,13 +79,13 @@ class FileOps():
 		self.common.log(2, 'Archiving file')		
 		
 		# server
-		server_folder = self.GetDate(self.server_archive)
+		server_folder = self.GetDatedFolder(self.server_archive)
 		ret = self.CreateFolder(server_folder)
 		if (ret):
 			ret = self.MoveFile(file_name, self.server_incoming, server_folder)
 		
 		# local
-		local_folder = self.GetDate(self.local_archive)
+		local_folder = self.GetDatedFolder(self.local_archive)
 		ret = self.CreateFolder(local_folder)
 		if (ret):
 			ret = self.MoveFile(file_name, self.local_incoming, local_folder)
@@ -88,9 +94,8 @@ class FileOps():
 
 	# ------------------------------------------------------------------------------
 
-	def GetDate(self, path):
-		now = datetime.now()
-		return '%s%s%s' % (path, now.strftime("%Y%m%d"), self.path_separator)
+	def GetDatedFolder(self, path):
+		return '%s%s%s' % (path, datetime.now().strftime("%Y%m%d"), self.path_separator)
 	
 	# ------------------------------------------------------------------------------
 
@@ -157,23 +162,6 @@ class FileOps():
 		
 	# ------------------------------------------------------------------------------
 	
-	def CreateFolder(self, folder):
-		ret = True
-		try:
-			os.mkdir(folder)
-			self.common.log(2, 'Folder created:[T][T]%s' % folder)			
-		except OSError as (errno, strerror):
-			if (errno == 17 or errno == 183): #17 for OSX, 183 for Windows
-				#self.common.log(1, 'Folder exists: %s' % folder)
-				pass
-			else:
-				self.common.log(3, strerror)
-				ret = False
-		
-		return ret
-	
-	# ------------------------------------------------------------------------------
-	
 	def CopyFile(self, filename, source, target):
 		#self.common.log(1, 'Copying file:[T][T]%s to %s' % (source, target))
 		self.common.log(1, 'Copying file:')
@@ -221,5 +209,43 @@ class FileOps():
 			ret = False	
 		
 		return ret
+
+	# ------------------------------------------------------------------------------
 	
+	def CreateFolder(self, folder):
+		ret = True
+		
+		try:
+			os.mkdir(folder)
+			self.common.log(2, 'Folder created:[T][T]%s' % folder)
+		except OSError as (errno, strerror):
+			if (errno == 17 or errno == 183): #17 for OSX, 183 for Windows
+				#self.common.log(1, 'Folder exists: %s' % folder)
+				pass
+			else:
+				self.common.log(3, folder, strerror)				
+				ret = False
+		
+		return ret
+	
+	# ------------------------------------------------------------------------------
+	
+	def WriteLog(self, priority, msg):
+		# do not log anything here!!
+		# this will cause a paradox in our universe
+		#
+		now = datetime.now()
+		filename = '%s%s.csv' % (self.local_log, now.strftime("%Y%m%d"))
+		try:
+			# create a comma separated line
+			msg = msg.replace("\t", ' ')
+			date_time = now.strftime("%Y-%m-%d,%H:%M:%S")
+			content = "%s,%s\n" % (date_time, msg)
+			
+			f = open(filename, 'a')
+			f.write(content)
+			f.closed
+		except:
+			print 'ERROR writing to log file %s' % filename
+		
 # ------------------------------------------------------------------------------

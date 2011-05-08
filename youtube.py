@@ -17,17 +17,19 @@ class YouTube():
 	tags = []
 	pattern_in_file = ''
 	check_status = False
+	dev_tag_to_key = False
 	test_mode = ''
 	
 	# ------------------------------------------------------------------------------
 	
-	def __init__(self, credentials, tags, pattern_in_file, check_status, test_mode):
+	def __init__(self, credentials, tags, pattern_in_file, check_status, dev_tag_to_key, test_mode):
 		self.common.log(1, 'YouTube initialised')
 		
 		self.credentials = credentials
 		self.tags = tags
 		self.pattern_in_file = pattern_in_file
 		self.check_status = check_status
+		self.dev_tag_to_key = dev_tag_to_key
 		self.test_mode = test_mode
 		
 		self.yt_service = gdata.youtube.service.YouTubeService()
@@ -99,12 +101,27 @@ class YouTube():
 		video_title = self.tags['title']
 		video_title = video_title.replace('yyyymmdd', my_date_dashes)
 		video_title = video_title.replace('hhmm', my_time_dashed)
+
+		# prepare developer's tags
+		developer_tags = self.tags['developer']
+		new_dev_tags = []
+		for dtag in developer_tags:
+			dtag = dtag.replace('date=yyyymmdd', 'date=' + my_date)
+			dtag = dtag.replace('videotime=hhmm', 'videotime=' + my_time)
+			dtag = dtag.replace('videoslot=hhmm', 'videoslot=' + my_time_slot)
+			new_dev_tags.append(dtag)	
+		
+		# prepare keywords and include dev tags in keywords if required
+		keywords = self.tags['keywords']
+		if self.dev_tag_to_key:
+				for dev_tag in new_dev_tags:
+					keywords = '%s, %s' % (keywords, dev_tag)
 		
 		# prepare a media group object to hold our video's meta-data
 		my_media_group = gdata.media.Group(
 			title=gdata.media.Title(text=video_title),
 			description=gdata.media.Description(description_type='plain', text=self.tags['description']),
-			keywords=gdata.media.Keywords(text=self.tags['keywords']),
+			keywords=gdata.media.Keywords(text=keywords),
 			category=[
 					gdata.media.Category(
 						text=self.tags['category'],
@@ -118,15 +135,7 @@ class YouTube():
 		# create the gdata.youtube.YouTubeVideoEntry to be uploaded
 		video_entry = gdata.youtube.YouTubeVideoEntry(media=my_media_group)
 		
-		# developer's tags
-		developer_tags = self.tags['developer']
-		new_dev_tags = []
-		for dtag in developer_tags:
-			dtag = dtag.replace('date=yyyymmdd', 'date=' + my_date)
-			dtag = dtag.replace('videotime=hhmm', 'videotime=' + my_time)
-			dtag = dtag.replace('videoslot=hhmm', 'videoslot=' + my_time_slot)
-			new_dev_tags.append(dtag)
-			
+		# add dev tags
 		video_entry.AddDeveloperTags(new_dev_tags)
 		
 		for dev_tag in video_entry.GetDeveloperTags():
@@ -182,7 +191,7 @@ class YouTube():
 						#ret = False
 						break;		
 					else:
-						print my_state, my_message, type(my_message)
+						print my_state, my_message
 						#self.common.log(1, '[T][T][T]%s' % (my_state, my_message))
 					
 				else:
@@ -238,6 +247,7 @@ class YouTube():
 	# ------------------------------------------------------------------------------
 	
 	def GetAndPrintVideoFeed(self, uri):
+		self.yt_service.developer_key = self.credentials['dev_key']
 		try:
 			self.feed = self.yt_service.GetYouTubeVideoFeed(uri)
 			#self.feed = self.yt_service.GetTopRatedVideoFeed()
