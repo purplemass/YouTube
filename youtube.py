@@ -8,32 +8,26 @@ import gdata.youtube.service
 
 # ------------------------------------------------------------------------------
 
-
 class YouTube():
-	
-	common = sys.modules['__main__'].common
-	
-	credentials = []
-	tags = []
-	pattern_in_file = ''
-	check_status = False
-	dev_tag_to_key = False
-	test_mode = ''
 	
 	# ------------------------------------------------------------------------------
 	
-	def __init__(self, credentials, tags, pattern_in_file, check_status, dev_tag_to_key, test_mode):
-		self.common.log(1, 'YouTube initialised')
+	def __init__(self, credentials, application, tags):
+		self.common = sys.modules['__main__'].common
+		
+		self.pause_time_status = 5
 		
 		self.credentials = credentials
 		self.tags = tags
-		self.pattern_in_file = pattern_in_file
-		self.check_status = check_status
-		self.dev_tag_to_key = dev_tag_to_key
-		self.test_mode = test_mode
+		self.check_status = application['check_status']
+		self.dev_tag_to_key = application['dev_tag_to_key']
+		self.test_mode = application['test_mode']
+		self.pattern_in_file = application['pattern_in_file']
 		
 		self.yt_service = gdata.youtube.service.YouTubeService()
 		self.yt_service.ssl = False # The YouTube API does not currently support HTTPS/SSL access.
+
+		self.common.log(1, 'YouTube initialised')
 	
 	# ------------------------------------------------------------------------------
 	
@@ -46,11 +40,11 @@ class YouTube():
 			# dev key
 			self.yt_service.developer_key = self.credentials['dev_key']
 			
-			# no longer required!!
+			# this is no no longer required!!
 			self.yt_service.client_id = self.credentials['client_id']
 			
 			self.yt_service.ProgrammaticLogin()
-			self.common.log(2, 'Logged into YouTube')
+			self.common.log(2, 'Logged in as %s' % self.credentials['username'])
 		
 		except:
 			self.common.log(3, 'Invalid username or password')
@@ -93,6 +87,9 @@ class YouTube():
 	# ------------------------------------------------------------------------------
 	
 	def UploadVideo(self, video_file_location):
+		#
+		# return: uploaded, rejected, error
+		#
 		self.common.PrintLine()
 		self.common.log(2, 'Uploading file:[T][T]%s' % video_file_location)
 		
@@ -151,15 +148,22 @@ class YouTube():
 			
 			#self.common.log(2, 'File uploaded:[T][T]%s' % video_file_location)
 			self.common.log(2, 'File uploaded')
-			ret = True
+			ret = 'uploaded'
 		
 		except gdata.youtube.service.YouTubeError, e:
+			print 'YouTubeError:'
+			print e
 			self.common.log(3, 'Could not upload file: %s (%s)' % (video_file_location, e[0]['reason']))
 			video_uploaded = ''
-			ret = False
-
+			ret = 'error'
+		
+		# to test uncomment these:
+		#ret = 'rejected'
+		#ret = 'too_many_recent_calls'
+		#return ret
+		
 		# check status of uploaded video
-		if (self.check_status == False):
+		if (self.check_status == False or self.test_mode):
 			return ret
 		
 		self.common.PrintLine()
@@ -172,7 +176,7 @@ class YouTube():
 		except:
 			video_id = ''
 		
-		upload_status_rem = 'not uploaded'
+		upload_status_rem = 'error'
 		
 		if (video_id <> ''):
 			while True:
@@ -188,7 +192,7 @@ class YouTube():
 					if my_state == 'rejected':
 						upload_status_rem = 'rejected (%s)' % my_message
 						# MUST DEAL WITH THIS!!
-						#ret = False
+						ret = my_state
 						break;		
 					else:
 						print my_state, my_message
@@ -196,9 +200,10 @@ class YouTube():
 					
 				else:
 					upload_status_rem = 'uploaded'
+					ret = upload_status_rem
 					break
 				
-				time.sleep(3)
+				time.sleep(self.pause_time_status)
 		
 		self.common.log(2, 'Uploaded file status:[T]%s' % upload_status_rem)
 		

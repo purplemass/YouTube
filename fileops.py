@@ -11,46 +11,34 @@ class FileOps():
 
 	# ------------------------------------------------------------------------------
 	
-	mainmodule = sys.modules['__main__']
-	common = sys.modules['__main__'].common
-	
-	server_incoming = ''
-	server_archive = ''
-	local_incoming = ''
-	local_archive = ''
-	local_log = ''
-	path_separator = ''
-	
-	movie_extension = ''
-	
-	file_list = {}
-	file_list_sorted_keys = []
-	
-	# ------------------------------------------------------------------------------
-	
-	def __init__(self, paths, movie_extension):
-		self.common.log(1, 'FileOps initialised')
+	def __init__(self, paths, application):
+		self.mainmodule = sys.modules['__main__']
+		self.common = sys.modules['__main__'].common
+		
 		self.server_incoming = paths['server_incoming']
 		self.server_archive = paths['server_archive']
-		
+		self.server_rejected = paths['server_rejected']
 		self.local_incoming = paths['local_incoming']
 		self.local_archive = paths['local_archive']
+		self.local_rejected = paths['local_rejected']
 		
 		self.local_log = paths['local_log']
 		
-		self.path_separator = paths['separator']
+		self.path_separator = application['separator']
+		self.movie_extension = application['movie_extension']
 		
-		self.movie_extension = movie_extension
+		self.file_list = {}
+		self.file_list_sorted_keys = []
 		
-		for folder in (self.server_incoming, self.server_archive, 
-						self.local_incoming, self.local_archive,
-						self.local_log
-						):
-			ret = self.CreateFolder(folder)
-			if (ret == False):
-				sys.exit('Exiting application')
-
+		# create all necessary folders
+		for folder in (paths):
+			if ( folder.find('server') > -1 or folder.find('local') > -1 ):
+				ret = self.CreateFolder(paths[folder])
+				if (ret == False):
+					sys.exit('Exiting application')
 		
+		self.common.log(1, 'FileOps initialised')
+	
 	# ------------------------------------------------------------------------------
 	
 	def ProcessFolder(self):
@@ -74,18 +62,25 @@ class FileOps():
 	
 	# ------------------------------------------------------------------------------
 	
-	def ArchiveFile(self, file_name):
+	def ArchiveFile(self, file_name, reject=False):
 		self.common.PrintLine()
-		self.common.log(2, 'Archiving file')		
+		if reject:
+			self.common.log(2, 'Rejecting file')
+			server_folder = self.server_rejected
+			local_folder = self.local_rejected
+		else:
+			self.common.log(2, 'Archiving file')
+			server_folder = self.server_archive
+			local_folder = self.local_archive
 		
 		# server
-		server_folder = self.GetDatedFolder(self.server_archive)
+		server_folder = self.GetDatedFolder(server_folder)
 		ret = self.CreateFolder(server_folder)
 		if (ret):
 			ret = self.MoveFile(file_name, self.server_incoming, server_folder)
 		
 		# local
-		local_folder = self.GetDatedFolder(self.local_archive)
+		local_folder = self.GetDatedFolder(local_folder)
 		ret = self.CreateFolder(local_folder)
 		if (ret):
 			ret = self.MoveFile(file_name, self.local_incoming, local_folder)
@@ -236,11 +231,12 @@ class FileOps():
 		#
 		now = datetime.now()
 		filename = '%s%s.csv' % (self.local_log, now.strftime("%Y%m%d"))
+		priority = self.common.priorities[priority-1]
 		try:
 			# create a comma separated line
 			msg = msg.replace("\t", ' ')
 			date_time = now.strftime("%Y-%m-%d,%H:%M:%S")
-			content = "%s,%s\n" % (date_time, msg)
+			content = "%s,%s,%s\n" % (date_time, priority, msg)
 			
 			f = open(filename, 'a')
 			f.write(content)

@@ -15,35 +15,26 @@ import yaml
 date_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
 error = False
+running = True
 settings_file = 'settings.yaml'
 
 try:
 	f = open(settings_file)
 except:
-	common.log(3, 'Cannot open %s' % settings_file)
+	print 'ERROR: Cannot open %s' % settings_file
 	error = True
 
 try:
 	settings = yaml.load(f)
 except:
-	common.log(3, 'Cannot load YAML')
+	print 'ERROR: Cannot load YAML file'
 	error = True
 
 try:
 	f.close()
 except:
-	common.log(3, 'Cannot close file %s' % settings_file)
+	print 'ERROR: Cannot close %s' % settings_file
 	error = True
-
-# ------------------------------------------------------------------------------
-# import our classes
-# ------------------------------------------------------------------------------
-
-import commonops
-common = commonops.CommonOps()
-
-import fileops
-import youtube
 
 # ------------------------------------------------------------------------------
 # process settings
@@ -52,36 +43,39 @@ import youtube
 if (not error):
 	# main vars
 	paths = settings['paths']
-	movie_extension = settings['movie_extension']
-	pause_time = settings['pause_time']
+	application = settings['application']
 	credentials = settings['credentials']
-	test_mode = settings['test_mode']	
+	tags = settings['tags']
+	gmail = settings['gmail']
+	
+	pause_time = application['pause_time']
+	pause_time_quota = application['pause_time_quota']
+	test_mode = application['test_mode']
+	
 	youtube_feed = settings['youtube_feed'] % credentials['username']
 	
-	# YouTube vars 
-	tags = settings['tags']
-	pattern_in_file = settings['pattern_in_file']
-	check_status = settings['check_status']
-	dev_tag_to_key = settings['dev_tag_to_key']
 else:
 	sys.exit('Existing program')
+
+# ------------------------------------------------------------------------------
+# import our classes
+# ------------------------------------------------------------------------------
+
+import commonops
+common = commonops.CommonOps(application, gmail)
+
+import fileops
+import youtube
 
 # ------------------------------------------------------------------------------
 # Main program
 # ------------------------------------------------------------------------------
 
-common.Mail('Test email')
-sys.exit(0)
+#common.Mail('Test email', settings['gmail'])
+#sys.exit(0)
 
 if (__name__ == '__main__'):
-	# YouTube class
-	youtube = youtube.YouTube(
-								credentials,
-								tags,
-								pattern_in_file,
-								check_status,
-								dev_tag_to_key,
-								test_mode)	
+	youtube = youtube.YouTube(credentials, application, tags)	
 
 	# if arg is list then list all videos for our 
 	# YouTube account - then exit
@@ -97,9 +91,9 @@ if (__name__ == '__main__'):
 		sys.exit('Exiting program')
 	
  	youtube.Login()
-	fileops = fileops.FileOps(paths, movie_extension)
+	fileops = fileops.FileOps(paths, application)
 	
-	while common.running:
+	while running:
 		common.PrintLine(True)
 		
 		# write date/time
@@ -112,9 +106,26 @@ if (__name__ == '__main__'):
 			time.sleep(pause_time)
 		else:
 			ret = youtube.UploadVideo(paths['local_incoming'] + file_name)
-			if (ret):
-				ret = fileops.ArchiveFile(file_name)
-				
+			if (ret != 'uploaded'):
+				common.log(3, 'Error (%s) when uploading video %s' % (ret, file_name))
+						
+			if (ret == 'uploaded'):
+				ret = fileops.ArchiveFile(file_name, False)
+			
+			elif (ret == 'rejected'):
+				ret = fileops.ArchiveFile(file_name, True)
+				body = gmail['rejected_body'] % (file_name)
+				common.Mail('%s' % body)
+			
+			elif (ret == 'too_many_recent_calls'):
+				body = gmail['quota_body'] % (file_name, (pause_time_quota/60))
+				common.Mail('%s' % body)
+				common.log(2, '... waiting for %s minutes to reset YouTube quota ...' % (pause_time_quota/60))
+				time.sleep(pause_time_quota)
+			
+			else:
+				ret = fileops.ArchiveFile(file_name, False)
+			
 		time.sleep(2)
 
 # ------------------------------------------------------------------------------

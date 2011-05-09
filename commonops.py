@@ -10,17 +10,14 @@ class CommonOps():
 
 	# ------------------------------------------------------------------------------
 	
-	mainmodule = sys.modules['__main__']
-	
-	running = True
-	write_log = False
-	
-	# ------------------------------------------------------------------------------
-	
-	def __init__(self):
+	def __init__(self, application, gmail):
+		self.mainmodule = sys.modules['__main__']
+		self.write_log = application['write_log']
+		self.gmail = gmail
+		self.priorities = ('debug', 'notice', 'error')
+		
 		self.PrintLine(True)
 		self.log(1, 'CommonOps initialised')
-		self.write_log = self.mainmodule.settings['write_log']
 	
 	# ------------------------------------------------------------------------------
 	
@@ -39,13 +36,14 @@ class CommonOps():
 		# 3 = error
 		#
 		if priority == 3:
-			error = 'ERROR '
+			error_msg = 'ERROR: '
 		else:
-			error = ''
+			error_msg = ''
 		
 		msg = msg.replace('[T]', '\t')
-		print '%s%s' % (error, msg)
+		print '%s%s' % (error_msg, msg)
 		
+		# write to file
 		if (self.write_log and priority > 1):
 			try:
 				self.mainmodule.fileops.WriteLog(priority, msg)
@@ -55,24 +53,24 @@ class CommonOps():
 	# ------------------------------------------------------------------------------
 	
 	def Mail(self, text):
-		from_email = 'youtubetest@imagination.com'
-		to_email = 'purplemass@gmail.com'
-		gmail_user = 'youtubetest@imagination.com '
-		gmail_password = '1mag1ant1on'
-		subject = 'Test email from the Python app'
+	 	msg = MIMEText(text.encode('utf-8'), _charset='utf-8')
+	 	to = ','.join(self.gmail['to']) 
+		msg['To'] = to
+		msg['From'] = self.gmail['from']
+		msg['Subject'] = self.gmail['subject']
 		
-	 	msg = MIMEText(text.encode('utf-8'), _charset='utf-8')	
-		msg['From'] = gmail_user
-		msg['To'] = to_email
-		msg['Subject'] = subject
-		
-		mailserver = smtplib.SMTP('smtp.gmail.com')
-		if self.mainmodule.settings['test_mode']: mailserver.set_debuglevel(1)
-		mailserver.ehlo()
-		mailserver.starttls()
-		mailserver.ehlo()
-		mailserver.login(gmail_user, gmail_password)
-		mailserver.sendmail(from_email, to_email, msg.as_string())
-		mailserver.close()
+		try:
+			mailserver = smtplib.SMTP('smtp.gmail.com', self.gmail['smtp_port'])
+			if self.gmail['debug']: mailserver.set_debuglevel(1)
+			mailserver.ehlo()
+			mailserver.starttls()
+			mailserver.ehlo()
+			mailserver.login(self.gmail['user'], self.gmail['password'])
+			mailserver.sendmail(self.gmail['from'], to, msg.as_string())
+			#mailserver.close()
+			mailserver.quit()
+			self.log(2, 'Automated email sent')
+		except:
+			self.log(3, 'Could not send automated email')
 
 # ------------------------------------------------------------------------------
