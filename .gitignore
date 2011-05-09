@@ -6,3 +6,5 @@ settings.yaml
 _xtras/
 incoming/
 archive/
+logs/
+rejected/

@@ -70,6 +70,9 @@ else:
 # Main program
 # ------------------------------------------------------------------------------
 
+common.Mail('Test email')
+sys.exit(0)
+
 if (__name__ == '__main__'):
 	# YouTube class
 	youtube = youtube.YouTube(

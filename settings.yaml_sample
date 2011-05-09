@@ -62,9 +62,9 @@ credentials:
 # ---------------------------------------------------------------
 
 tags:
-  title:           FocusCam yyyymmdd hhmm
+  title:           Focus Cam yyyymmdd hhmm
   description:     Focus Cam, an innovative camera-based activation, inspired by the camera technology in the all-new Ford Focus, captures your very own UEFA Champions League moment. 21-28 May 2011, UEFA Champions Festival in Hyde Park, London.
-  keywords:        Ford, Focus, Football, UEFA, UCL, Champions League, FocusCam, Hyde Park, Final
+  keywords:        Ford, Focus, Football, UEFA, UCL, Champions League, Focus Cam, Hyde Park, Final
   category:        Autos
   developer:
     - date=yyyymmdd
