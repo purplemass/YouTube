@@ -30,17 +30,27 @@ Installation on Windows
 Installation on OSX
 ------------------------------------------------------------------------
 
+- Make sure Python 2.6.1 or higher is installed
+
 - Download Youtube's gdata-python-client [gdata-2.0.14.zip] from
   http://code.google.com/p/gdata-python-client/downloads/detail?name=gdata-2.0.14.zip&can=2&q=
 
 - Unzip file to a known location e.g. /gdata-2.0.14/
 
-- Using terminal set the PYTHONPATH environmental variable to /gdata-2.0.14/src/.
-  For example*:
-  $ PYTHONPATH="/gdata-2.0.14/src/:$PYTHONPATH"
-  $ export PYTHONPATH
+- Using Terminal set the PYTHONPATH environmental variable to the above
+  location adding src/ on the end: /gdata-2.0.14/src/
 
-* Dollar sign above ($) denotes the Terminal command line prompt
+  For example, if you unzip gdata to /Users/admin/Documents/ you should 
+  type the following in Terminal: 
+    $ PYTHONPATH="/Users/admin/Documents/gdata-2.0.14/src/:$PYTHONPATH"
+    $ export PYTHONPATH
+
+  The dollar sign above ($) denotes the Terminal command line prompt and 
+  shouldn't be typed in.
+
+- To see if PYTHONPATH is correctly set up, type 'export' in Terminal and 
+  check the result:
+    $ export
 
 
 ------------------------------------------------------------------------

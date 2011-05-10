@@ -27,8 +27,9 @@ class FileOps():
 		self.path_separator = application['separator']
 		self.movie_extension = application['movie_extension']
 		
-		self.file_list = {}
-		self.file_list_sorted_keys = []
+		self.file_list_by_name = []
+		self.file_list_by_mt = {}
+		self.file_list_by_mt_sorted_keys = []
 		
 		# create all necessary folders
 		for folder in (paths):
@@ -44,8 +45,8 @@ class FileOps():
 	def ProcessFolder(self):
 		self.ScanFolder()
 
-		file_to_process = self.GetOldestFile()
-		num = len(self.file_list)
+		file_to_process = self.GetOldestFileByName()
+		num = len(self.file_list_by_mt)
 		
 		self.common.log(2, 'Files to process:[T]%s' % num)
 			
@@ -95,25 +96,33 @@ class FileOps():
 	# ------------------------------------------------------------------------------
 
 	def SortFileList(self, adict):
-		self.file_list_sorted_keys = adict.keys()
-		self.file_list_sorted_keys.sort()
+		self.file_list_by_mt_sorted_keys = adict.keys()
+		self.file_list_by_mt_sorted_keys.sort()
 	
 	# ------------------------------------------------------------------------------
 	
-	def GetOldestFile(self):
-		if (len(self.file_list_sorted_keys) == 0):
+	def GetOldestFileByName(self):
+		if (len(self.file_list_by_name) == 0):
 			return ''
 		else:
-			return self.file_list[self.file_list_sorted_keys[0]]
+			return self.file_list_by_name[0]
+	
+	# ------------------------------------------------------------------------------
+	
+	def GetOldestFileByMT(self):
+		if (len(self.file_list_by_mt_sorted_keys) == 0):
+			return ''
+		else:
+			return self.file_list_by_mt[self.file_list_by_mt_sorted_keys[0]]
 	
 	# ------------------------------------------------------------------------------
 	
 	def PrintFolder(self):
-		for mdt in self.file_list_sorted_keys:
-			self.common.log(1, '%s %s' % (mdt, self.file_list[mdt]))
+		for mdt in self.file_list_by_mt_sorted_keys:
+			self.common.log(1, '%s %s' % (mdt, self.file_list_by_mt[mdt]))
 		"""	
 		cc = 1
-		for k, v in self.file_list.iteritems():
+		for k, v in self.file_list_by_mt.iteritems():
 			self.common.log(1, '%s %s %s' % (cc, k, v))
 			cc += 1
 		"""
@@ -123,7 +132,8 @@ class FileOps():
 	def ScanFolder(self):
 		self.common.log(1, 'Scanning folder[T][T]%s' % self.server_incoming)
 		
-		self.file_list = {}
+		self.file_list_by_name = []
+		self.file_list_by_mt = {}
 		
 		try:
 			# do not use this on Windows:
@@ -144,17 +154,19 @@ class FileOps():
 			
 			# check extension
 			if (myfile.endswith('.' + self.movie_extension)):
-				#ERR!!
+				self.file_list_by_name.append(filename)
 				try:
 					(mode,ino,dev,nlink,uid,gid,size,atime,mtime,ctime) = os.stat(myfile)
+					# get modified time (MT) of each file
 					mtime = datetime.fromtimestamp(mtime)
-					self.file_list[str(mtime) + '-' + str(cc)] = filename
+					self.file_list_by_mt[str(mtime) + '-' + str(cc)] = filename
 				except:
 					self.common.log(3, 'Could not process file %s so ignoring it' % myfile)
 		
-		# get sorted keys
-		self.SortFileList(self.file_list)
-		
+		# sort lists
+		self.file_list_by_name.sort()
+		self.SortFileList(self.file_list_by_mt)
+				
 	# ------------------------------------------------------------------------------
 	
 	def CopyFile(self, filename, source, target):
