@@ -1,5 +1,7 @@
+# Note: boolean values should be written as True or False
+
 # ---------------------------------------------------------------
-# Application
+# Paths
 # ---------------------------------------------------------------
 
 # All paths written with forward slashes '/'
@@ -9,42 +11,54 @@
 #    a mapped drive: z:/path/to/movie/files/
 #    a network path: //network/path/to/movie/files/
 #
-# 'use_dates' below denotes whether the server path should be
-# appended with a date i.e. /path/to/server/20100501/
-# [This does not work at the moment]
-#
 paths:
-  server_incoming: /path/to/server/incoming/
-  server_archive:  /path/to/server/archive/
+  server_incoming: /Users/purplemass/Desktop/YouTube/incoming/
+  server_archive:  /Users/purplemass/Desktop/YouTube/archive/
+  server_rejected: /Users/purplemass/Desktop/YouTube/rejected/
   local_incoming:  ./incoming/
   local_archive:   ./archive/
+  local_rejected:  ./rejected/
   local_log:       ./logs/
+
+# ---------------------------------------------------------------
+# Application
+# ---------------------------------------------------------------
+
+application:
+  # Time in seconds to pause between each network query
+  pause_time:        5
+
+  # Time in seconds to pause when there's a quota violation
+  pause_time_quota:  600
+
+  # Should we check the status of the uploaded file? (True/False)
+  # This will add to processing of each file but we can find
+  # duplicates and deal with them
+  check_status:      True
+
+  # Do we write the dev tags to keywords?
+  dev_tag_to_key:    True
+
+  # Write logs to file?
+  write_log:         True
+
+  # test mode: will not upload to YouTube but will carry out
+  # all other operations (scanning, copying, archiving etc.)
+  test_mode:         False
+
+  # Do not include the dot '.' - only the extension e.g. mov or mp4
+  movie_extension:   mov
+
+  # Pattern to search for to find date/time in the file name
+  pattern_in_file:   FocusCam_
+  
+  # file separator
   separator:       /
+  
+  # 'use_dates' below denotes whether the server path should be
+  # appended with a date i.e. /path/to/server/20100501/
+  # [This does not work at the moment]
   use_dates:       True
-
-# Time in seconds to pause between each network query
-#
-pause_time:        5
-
-# Should we check the status of the uploaded file? (True/False)
-# This will add to processing of each file but we can find
-# duplicates and deal with them
-#
-check_status:      True
-
-# do we write the dev tags to as keywords
-#
-dev_tag_to_key:    True
-
-# write logs to file
-#
-write_log:         True
-
-# test mode: will not upload to YouTube but will carry out
-# all other operations (scanning, copying, archiving etc.)
-# set to True or False
-#
-test_mode:         False
 
 # ---------------------------------------------------------------
 # YouTube account credentials
@@ -53,8 +67,9 @@ test_mode:         False
 credentials:
   username:        FocusCamTest
   password:        focuscam
-  application:     focuscam-uploader-application
   dev_key:         AI39si7d7xVRmwtUXlhRXWtDs5NQhBNbq7xfLW4ZtIx74yU9Azs0XLCrPTKr60uN-X8juceJpjThVpoVeal-1FT-INJwm7OccQ
+  # these last two are not used by YouTube anymore
+  application:     focuscam-uploader-application
   client_id:       FocusCamTest
 
 # ---------------------------------------------------------------
@@ -72,16 +87,23 @@ tags:
     - videoslot=hhmm
 
 # ---------------------------------------------------------------
-# Files
+# Gmail account credentials
 # ---------------------------------------------------------------
 
-# Do not include the dot '.' - only the extension e.g. mov or mp4
-#
-movie_extension:   mp4
-
-# Pattern to search for to find date/time in the file name
-#
-pattern_in_file:   FocusCam_
+gmail:
+  to:
+    - purplemass@gmail.com
+#    - simon.levitt@imagination.com
+#    - alan.girard@imagination.com
+#    - brook.downton@imagination.com
+  from:            youtubetest@imagination.com
+  user:            youtubetest@imagination.com
+  password:        1mag1ant1on
+  subject:         Automated email from YouTube uploader
+  smtp_port:       587
+  rejected_body:   "The following file has been rejected by YouTube: %s"
+  quota_body:      "Quota violation error reported by YouTube while processing file: %s.\n\nWill resume uploading in %s minutes."
+  debug:           False
 
 # ---------------------------------------------------------------
 # For testing only
