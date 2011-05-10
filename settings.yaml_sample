@@ -47,7 +47,7 @@ application:
   test_mode:         False
 
   # Do not include the dot '.' - only the extension e.g. mov or mp4
-  movie_extension:   mov
+  movie_extension:   mp4
 
   # Pattern to search for to find date/time in the file name
   pattern_in_file:   FocusCam_
