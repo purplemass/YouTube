@@ -35,23 +35,30 @@ Installation on OS X
 - Download Youtube's gdata-python-client [gdata-2.0.14.zip] from
   http://code.google.com/p/gdata-python-client/downloads/detail?name=gdata-2.0.14.zip&can=2&q=
 
-- Unzip file to a known location e.g. /gdata-2.0.14/
+- Unzip file to the root of your machine i.e. /gdata-2.0.14/
 
-- Using Terminal set the PYTHONPATH environmental variable to the above
-  location adding src/ on the end: /gdata-2.0.14/src/
+- You must now set an environmental variable on your system called
+  PYTHONPATH to /gdata-2.0.14/src/ once at installation time:
 
-  For example, if you unzip gdata to /Users/admin/Documents/ you should 
-  type the following in Terminal: 
-    $ PYTHONPATH="/Users/admin/Documents/gdata-2.0.14/src/:$PYTHONPATH"
-    $ export PYTHONPATH
+  - Make a note of the location of the file named 'environment.plist' in the root
+    of the application, let's call this e.g. /path/to/youtube-uploader/environment.plist
 
-  The dollar sign above ($) denotes the Terminal command line prompt and 
-  shouldn't be typed in.
+  - Copy this file to .MacOSX folder of the current user's root folder by typing the
+    following in Terminal:
+      $ cd
+      $ mkdir .MacOSX
+      $ cp /path/to/youtube-uploader/environment.plist ~/.MacOSX/environment.plist
 
-- To see if PYTHONPATH is correctly set up, type 'export' in Terminal and 
-  check the result:
-    $ export
+    The dollar sign above ($) denotes the Terminal command line prompt and 
+    shouldn't be typed in.
 
+  - To see if PYTHONPATH is correctly set up, type 'env' in Terminal and 
+    check the result
+
+    Note: Instead of the above, you can set PYHTHONPATH manually each time
+          you reboot your machine:
+            $ PYTHONPATH="/gdata-2.0.14/src/:$PYTHONPATH"
+            $ export PYTHONPATH
 
 ------------------------------------------------------------------------
 Configuration
