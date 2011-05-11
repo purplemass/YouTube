@@ -27,7 +27,7 @@ Installation on Windows
 
 
 ------------------------------------------------------------------------
-Installation on OSX
+Installation on OS X
 ------------------------------------------------------------------------
 
 - Make sure Python 2.6.1 or higher is installed
@@ -74,10 +74,20 @@ Running the application
 
 Windows: Double-click main.py
 
-OSX:
+OS X:
 - Open Terminal
 - Change directory to the application folder
 - Type 'python main.py' and press Enter
+
+To create an executable application on OS X:
+
+- Open '_Start-YouTubeUploader' in AppleScript Editor
+- Select 'File' and 'Save As'
+- Set 'File Format' to be 'Application'
+- Tick 'Run Only'
+- Make sure 'Startup Screen' is not ticked
+- Save file as '_Start-YouTubeUploader.app'
+- Double-click file to run the Python application
 
 
 ------------------------------------------------------------------------
