@@ -12,13 +12,13 @@
 #    a network path: //network/path/to/movie/files/
 #
 paths:
-  server_incoming: /Users/purplemass/Desktop/YouTube/incoming/
-  server_archive:  /Users/purplemass/Desktop/YouTube/archive/
-  server_rejected: /Users/purplemass/Desktop/YouTube/rejected/
-  local_incoming:  ./incoming/
-  local_archive:   ./archive/
-  local_rejected:  ./rejected/
-  local_log:       ./logs/
+  server_incoming:   /Users/purplemass/Desktop/YouTube/incoming/
+  server_archive:    /Users/purplemass/Desktop/YouTube/archive/
+  server_rejected:   /Users/purplemass/Desktop/YouTube/rejected/
+  local_incoming:    ./incoming/
+  local_archive:     ./archive/
+  local_rejected:    ./rejected/
+  local_log:         ./logs/
 
 # ---------------------------------------------------------------
 # Application
@@ -47,40 +47,42 @@ application:
   test_mode:         False
 
   # Do not include the dot '.' - only the extension e.g. mov or mp4
-  movie_extension:   mp4
+  movie_extension:   mov
 
   # Pattern to search for to find date/time in the file name
   pattern_in_file:   FocusCam_
   
   # file separator
-  separator:       /
+  separator:         /
   
   # 'use_dates' below denotes whether the server path should be
   # appended with a date i.e. /path/to/server/20100501/
   # [This does not work at the moment]
-  use_dates:       True
+  use_dates:         True
 
 # ---------------------------------------------------------------
 # YouTube account credentials
 # ---------------------------------------------------------------
 
 credentials:
-  username:        FocusCamTest
-  password:        focuscam
-  dev_key:         AI39si7d7xVRmwtUXlhRXWtDs5NQhBNbq7xfLW4ZtIx74yU9Azs0XLCrPTKr60uN-X8juceJpjThVpoVeal-1FT-INJwm7OccQ
+  username:          FocusCamTest
+  password:          focuscam
+  dev_key:           AI39si5r_5FreJe0b_63xL8S_i_mgP5imWL1u8mVbimMqrQIK8JXddAvJGgy_t1ZBkBfHDenvL_9cFZAhrK_0qXOXjteUji1yQ
+  dev_key_testing:   AI39si7d7xVRmwtUXlhRXWtDs5NQhBNbq7xfLW4ZtIx74yU9Azs0XLCrPTKr60uN-X8juceJpjThVpoVeal-1FT-INJwm7OccQ
+  
   # these last two are not used by YouTube anymore
-  application:     focuscam-uploader-application
-  client_id:       FocusCamTest
+  application:       focuscam-uploader-application
+  client_id:         FocusCamTest
 
 # ---------------------------------------------------------------
 # Tags used when uploading to YouTube
 # ---------------------------------------------------------------
 
 tags:
-  title:           Focus Cam yyyymmdd hhmm
-  description:     Focus Cam, an innovative camera-based activation, inspired by the camera technology in the all-new Ford Focus, captures your very own UEFA Champions League moment. 21-28 May 2011, UEFA Champions Festival in Hyde Park, London.
-  keywords:        Ford, Focus, Football, UEFA, UCL, Champions League, Focus Cam, Hyde Park, Final
-  category:        Autos
+  title:             Focus Cam yyyymmdd hhmm
+  description:       Focus Cam, an innovative camera-based activation, inspired by the camera technology in the all-new Ford Focus, captures your very own UEFA Champions League moment. 21-28 May 2011, UEFA Champions Festival in Hyde Park, London.
+  keywords:          Ford, Focus, Football, UEFA, UCL, Champions League, Focus Cam, Hyde Park, Final
+  category:          Autos
   developer:
     - date=yyyymmdd
     - videotime=hhmm
@@ -92,21 +94,20 @@ tags:
 
 gmail:
   to:
-    - purplemass@gmail.com
-#    - simon.levitt@imagination.com
-#    - alan.girard@imagination.com
-#    - brook.downton@imagination.com
-  from:            youtubetest@imagination.com
-  user:            youtubetest@imagination.com
-  password:        1mag1ant1on
-  subject:         Automated email from YouTube uploader
-  smtp_port:       587
-  rejected_body:   "The following file has been rejected by YouTube: %s"
-  quota_body:      "Quota violation error reported by YouTube while processing file: %s.\n\nWill resume uploading in %s minutes."
-  debug:           False
+    - simon.levitt@imagination.com
+    - alan.girard@imagination.com
+    - brook.downton@imagination.com
+  from:              youtubetest@imagination.com
+  user:              youtubetest@imagination.com
+  password:          1mag1ant1on
+  subject:           Automated email from YouTube uploader
+  smtp_port:         587
+  rejected_body:     "The following file has been rejected by YouTube: %s"
+  quota_body:        "Quota violation error reported by YouTube while processing file: %s.\n\nWill resume uploading in %s minutes."
+  debug:             False
 
 # ---------------------------------------------------------------
 # For testing only
 # ---------------------------------------------------------------
 
-youtube_feed:      http://gdata.youtube.com/feeds/api/users/%s/uploads
+youtube_feed:        http://gdata.youtube.com/feeds/api/users/%s/uploads

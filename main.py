@@ -90,7 +90,9 @@ if (__name__ == '__main__'):
 		youtube.GetAndPrintVideoFeed(youtube_feed)
 		sys.exit('Exiting program')
 	
- 	youtube.Login()
+	if not test_mode:
+		youtube.Login()
+	 
 	fileops = fileops.FileOps(paths, application)
 	
 	while running:
