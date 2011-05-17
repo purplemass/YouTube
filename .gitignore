@@ -2,8 +2,9 @@
 ._*
 
 settings.yaml
-_Get_Video_Feed.app/
-_Start-YouTubeUploader.app/
+
+*.app/
+
 *.pyc
 _xtras/
 incoming/
