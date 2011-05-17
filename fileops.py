@@ -52,7 +52,7 @@ class FileOps():
 		num = len(self.file_list_by_name) # !! watch this if you go back to file_list_by_mt
 		
 		self.common.log(2, 'Files to process:[T]%s' % num)
-			
+		
 		if (num > 0):
 			self.common.PrintLine()
 			self.common.log(2, 'Processing file:[T]%s' % file_to_process)
@@ -61,7 +61,7 @@ class FileOps():
 				return file_to_process
 		else:
 			ret = False
-				
+		
 		return ret
 	
 	# ------------------------------------------------------------------------------
@@ -90,9 +90,9 @@ class FileOps():
 			ret = self.MoveFile(file_name, self.local_incoming, local_folder)
 		
 		return ret
-
+	
 	# ------------------------------------------------------------------------------
-
+	
 	def GetDatedFolder(self, path):
 		return '%s%s%s' % (path, datetime.now().strftime("%Y%m%d"), self.path_separator)
 	
@@ -123,7 +123,7 @@ class FileOps():
 	def PrintFolder(self):
 		for mdt in self.file_list_by_mt_sorted_keys:
 			self.common.log(1, '%s %s' % (mdt, self.file_list_by_mt[mdt]))
-		"""	
+		"""
 		cc = 1
 		for k, v in self.file_list_by_mt.iteritems():
 			self.common.log(1, '%s %s %s' % (cc, k, v))
@@ -161,7 +161,7 @@ class FileOps():
 					(mode,ino,dev,nlink,uid,gid,size,atime,mtime,ctime) = os.stat(myfile)
 					# get modified time (MT) of each file
 					mtime = datetime.fromtimestamp(mtime)
-
+					
 					# compare MT with current time
 					# only allow files that are older than specified time
 					#
@@ -197,7 +197,7 @@ class FileOps():
 			ret = True
 		except IOError as (errno, strerror):
 			self.common.log(3, 'Could not copy file: %s (%s)' % (filename, strerror))
-			ret = False	
+			ret = False
 		
 		return ret
 	
@@ -207,14 +207,14 @@ class FileOps():
 		self.common.log(1, 'Moving file:')
 		self.common.log(1, '- from:[T][T][T]%s' % source)
 		self.common.log(1, '- to[T][T][T]%s' % target)
-			
+		
 		try:
 			shutil.move(source + filename, target + filename)
 			#self.common.log(1, 'File moved: %s' % source)
 			ret = True
 		except IOError as (errno, strerror):
 			self.common.log(3, 'Could not move file: %s (%s)' % (filename, strerror))
-			ret = False	
+			ret = False
 		
 		return ret
 	
@@ -222,14 +222,14 @@ class FileOps():
 	
 	def DeleteFile(self, file_name):
 		self.common.log(1, 'Deleting file:[T][T]%s' % file_name)
-			
+		
 		try:
 			os.remove(file_name)
 			#self.common.log(1, 'File deleted: %s' % file_name)
 			ret = True
 		except IOError as (errno, strerror):
 			self.common.log(3, 'Could not delete file: %s (%s)' % (file_name, strerror))
-			ret = False	
+			ret = False
 		
 		return ret
 
@@ -246,7 +246,7 @@ class FileOps():
 				#self.common.log(1, 'Folder exists: %s' % folder)
 				pass
 			else:
-				self.common.log(3, folder, strerror)				
+				self.common.log(3, folder, strerror)
 				ret = False
 		
 		return ret
@@ -271,5 +271,5 @@ class FileOps():
 			f.closed
 		except:
 			print 'ERROR writing to log file %s' % filename
-		
+	
 # ------------------------------------------------------------------------------
