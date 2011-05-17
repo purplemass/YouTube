@@ -31,6 +31,9 @@ application:
   # Time in seconds to pause when there's a quota violation
   pause_time_quota:  600
 
+  # Difference in Modified Time of incoming files (in seconds)
+  difference_in_mt:  10
+
   # Should we check the status of the uploaded file? (True/False)
   # This will add to processing of each file but we can find
   # duplicates and deal with them

@@ -2,6 +2,7 @@
 
 import sys, os
 from datetime import datetime
+from time import mktime
 import dircache
 import shutil
 
@@ -27,6 +28,8 @@ class FileOps():
 		self.path_separator = application['separator']
 		self.movie_extension = application['movie_extension']
 		
+		self.difference_in_mt = application['difference_in_mt']
+		
 		self.file_list_by_name = []
 		self.file_list_by_mt = {}
 		self.file_list_by_mt_sorted_keys = []
@@ -44,9 +47,9 @@ class FileOps():
 	
 	def ProcessFolder(self):
 		self.ScanFolder()
-
+		
 		file_to_process = self.GetOldestFileByName()
-		num = len(self.file_list_by_mt)
+		num = len(self.file_list_by_name) # !! watch this if you go back to file_list_by_mt
 		
 		self.common.log(2, 'Files to process:[T]%s' % num)
 			
@@ -154,19 +157,32 @@ class FileOps():
 			
 			# check extension
 			if (myfile.endswith('.' + self.movie_extension)):
-				self.file_list_by_name.append(filename)
 				try:
 					(mode,ino,dev,nlink,uid,gid,size,atime,mtime,ctime) = os.stat(myfile)
 					# get modified time (MT) of each file
 					mtime = datetime.fromtimestamp(mtime)
-					self.file_list_by_mt[str(mtime) + '-' + str(cc)] = filename
+
+					# compare MT with current time
+					# only allow files that are older than specified time
+					#
+					diff_u = self.MakeUnixTime(datetime.now()) - self.MakeUnixTime(mtime)
+					
+					# add to our lists
+					if (diff_u > self.difference_in_mt):
+						self.file_list_by_name.append(filename)
+						self.file_list_by_mt[str(mtime) + '-' + str(cc)] = filename
 				except:
 					self.common.log(3, 'Could not process file %s so ignoring it' % myfile)
-		
+				
 		# sort lists
 		self.file_list_by_name.sort()
 		self.SortFileList(self.file_list_by_mt)
-				
+	
+	# ------------------------------------------------------------------------------
+	
+	def MakeUnixTime(self, my_time):
+		return mktime(my_time.timetuple())+1e-6*my_time.microsecond
+	
 	# ------------------------------------------------------------------------------
 	
 	def CopyFile(self, filename, source, target):
