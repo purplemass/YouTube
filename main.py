@@ -71,9 +71,6 @@ import youtube
 # Main program
 # ------------------------------------------------------------------------------
 
-#common.Mail('Test email', settings['gmail'])
-#sys.exit(0)
-
 if (__name__ == '__main__'):
 	youtube = youtube.YouTube(credentials, application, tags)	
 
