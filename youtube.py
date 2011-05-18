@@ -151,8 +151,7 @@ class YouTube():
 			ret = 'uploaded'
 		
 		except gdata.youtube.service.YouTubeError, e:
-			print 'YouTubeError:'
-			print e
+			print 'YouTubeError:', e
 			self.common.log(3, 'Could not upload file: %s (%s)' % (video_file_location, e[0]['reason']))
 			video_uploaded = ''
 			ret = 'error'
@@ -160,10 +159,12 @@ class YouTube():
 		# to test uncomment these:
 		#ret = 'rejected'
 		#ret = 'too_many_recent_calls'
+		#ret = 'failed'
+		#ret = 'error'
 		#return ret
 		
 		# check status of uploaded video
-		if (self.check_status == False or self.test_mode):
+		if (self.check_status == False or self.test_mode or ret == 'error'):
 			return ret
 		
 		self.common.PrintLine()
@@ -176,38 +177,42 @@ class YouTube():
 		except:
 			video_id = ''
 		
-		upload_status_rem = 'error'
-		
 		if (video_id <> ''):
 			while True:
 				try:
 					upload_status = self.yt_service.CheckUploadStatus(video_id=video_id)
 				except:
-					self.common.log(3, 'Could not get status on uploaded file.')
+					my_state = 'error'
+					my_message = 'Could not get status on uploaded file'
 					break
 				
 				if upload_status is not None:
 					my_state = upload_status[0]
 					my_message = upload_status[1]
-					if my_state == 'rejected':
-						upload_status_rem = 'rejected (%s)' % my_message
-						# MUST DEAL WITH THIS!!
-						ret = my_state
-						break;		
-					else:
-						print my_state, my_message
-						#self.common.log(1, '[T][T][T]%s' % (my_state, my_message))
 					
+					if my_state == 'processing':
+						#self.common.log(1, '[T][T][T]%s' % (my_state, my_message))
+						print '[%s]' % my_state
+					else:
+						# rejected, failed, error
+						break
+									
 				else:
-					upload_status_rem = 'uploaded'
-					ret = upload_status_rem
+					my_state = 'uploaded'
+					my_message = 'success'
 					break
 				
 				time.sleep(self.pause_time_status)
 		
-		self.common.log(2, 'Uploaded file status:[T]%s' % upload_status_rem)
+		# log it
+		if (my_state != 'uploaded'):
+			log_level = 3
+		else:
+			log_level = 2
+			
+		self.common.log(log_level, 'Uploaded file status:[T]%s (%s)' % (my_state, my_message))
 		
-		return ret
+		return my_state
 	
 	# ------------------------------------------------------------------------------
 	

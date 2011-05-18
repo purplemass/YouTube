@@ -105,25 +105,25 @@ if (__name__ == '__main__'):
 			time.sleep(pause_time)
 		else:
 			ret = youtube.UploadVideo(paths['local_incoming'] + file_name)
-			if (ret != 'uploaded'):
-				common.log(3, 'Error (%s) when uploading video %s' % (ret, file_name))
-						
+			
+			# check the status
 			if (ret == 'uploaded'):
 				ret = fileops.ArchiveFile(file_name, False)
 			
-			elif (ret == 'rejected'):
-				ret = fileops.ArchiveFile(file_name, True)
-				body = gmail['rejected_body'] % (file_name)
-				common.Mail('%s' % body)
-			
+			# reject with a very long pause
 			elif (ret == 'too_many_recent_calls'):
 				body = gmail['quota_body'] % (file_name, (pause_time_quota/60))
 				common.Mail('%s' % body)
 				common.log(2, '... waiting for %s minutes to reset YouTube quota ...' % (pause_time_quota/60))
 				time.sleep(pause_time_quota)
-			
+
+			# reject with a short pause
+			#elif ( (ret == 'rejected') or (ret == 'failed') or (ret == 'error') ):
 			else:
-				ret = fileops.ArchiveFile(file_name, False)
+				ret = fileops.ArchiveFile(file_name, True)
+				body = gmail['rejected_body'] % (file_name)
+				common.Mail('%s' % body)
+			
 			
 		time.sleep(2)
 
