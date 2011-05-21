@@ -40,7 +40,7 @@ application:
   check_status:      True
 
   # Do we write the dev tags to keywords?
-  dev_tag_to_key:    True
+  dev_tag_to_key:    False
 
   # Write logs to file?
   write_log:         True
